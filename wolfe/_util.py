@@ -19,24 +19,31 @@ u"""
  See the License for the specific language governing permissions and
  limitations under the License.
 
-==================================================
- JobDispenser - A Reliable Task Management System
-==================================================
+================
+ Misc Utilities
+================
 
-JobDispenser - A Reliable Task Management System.
+Misc utilities.
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
-__license__ = "Apache License, Version 2.0"
-__version__ = ('0.9.9.8', False, 4809)
 
-from jobdispenser import util as _util
-from jobdispenser._exceptions import * # pylint: disable = W0401, W0614, W0622
 
-#: Version of the jobdispenser package
-#:
-#: :Type: `jobdispenser.util.Version`
-version = _util.Version(*__version__)
+def find_public(space):
+    """
+    Determine all public names in space
 
-__all__ = _util.find_public(globals())
-del _util
+    If the space contains an ``__all__`` sequence, a copy is returned (as a
+    list). Otherwise, all symbol names not starting with an underscore are
+    listed.
+
+    :Parameters:
+      `space` : ``dict``
+        Name space to inspect
+
+    :Return: List of public names
+    :Rtype: ``list``
+    """
+    if '__all__' in space:
+        return list(space['__all__'])
+    return [key for key in space.keys() if not key.startswith('_')]

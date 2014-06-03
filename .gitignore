@@ -12,3 +12,7 @@ _website/
 .sw?
 .*.sw?
 MANIFEST
+
+.coverage
+docs/coverage/
+

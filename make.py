@@ -43,6 +43,7 @@ class Target(make.Target):
             'docs': 'docs',
             'examples': 'docs/examples',
             'tests': 'tests',
+            'coverage': 'docs/coverage',
             'apidoc': 'docs/apidoc',
             'userdoc': 'docs/userdoc',
             'userdoc_source': 'docs/_userdoc',
@@ -61,10 +62,8 @@ class Target(make.Target):
             _sys.path.insert(0, libpath)
 
         self.ebuild_files = {
-            'jobdispenser-beta.ebuild.in':
-                'jobdispenser-%(VERSION)s_beta%(REV)s.ebuild',
-            'jobdispenser.ebuild.in':
-                'jobdispenser-%(VERSION)s.ebuild',
+            'wolfe-beta.ebuild.in': 'wolfe-%(VERSION)s_beta%(REV)s.ebuild',
+            'wolfe.ebuild.in': 'wolfe-%(VERSION)s.ebuild',
         }
 
 
@@ -80,8 +79,8 @@ class Check(Target):
         _sys.path.insert(0, fake)
 
         from _setup.dev import analysis
-        term.green('Linting jobdispenser sources...')
-        res = analysis.pylint('_pkg/pylint.conf', 'jobdispenser')
+        term.green('Linting wolfe sources...')
+        res = analysis.pylint('pylintrc', 'wolfe')
         if res == 2:
             make.warn('pylint not found', self.NAME)
 
@@ -89,29 +88,25 @@ class Check(Target):
 class Test(Target):
     """ Test the code """
     NAME = "test"
-    DEPS = ["system-test", "example-test"]
+    DEPS = ["nose-test"]
 
 
-class ExampleTest(Target):
-    """ Test the example code """
-    NAME = "example-test"
+class NoseTest(Target):
+    """ Run the nose tests """
+    NAME = "nose-test"
     DEPS = ["compile-quiet"]
 
     def run(self):
-        if shell.spawn(_sys.executable, 'run_tests.py',
-            self.dirs['examples'], self.dirs['lib']
-        ): raise RuntimeError('tests failed')
+        if shell.spawn(
+                'nosetests',
+                '-c', 'package.cfg',
+                self.dirs['tests'], self.dirs['lib']):
+            raise RuntimeError('tests failed')
 
-
-class SystemTest(Target):
-    """ Run the system tests """
-    NAME = "system-test"
-    DEPS = ["compile-quiet"]
-
-    def run(self):
-        if shell.spawn(_sys.executable, 'run_tests.py',
-            self.dirs['tests'], self.dirs['lib']
-        ): raise RuntimeError('tests failed')
+    def clean(self, scm, dist):
+        term.green("Removing coverage files...")
+        shell.rm_rf(self.dirs['coverage'])
+        shell.rm('.coverage')
 
 
 class Compile(Target):
@@ -140,7 +135,7 @@ class Compile(Target):
         finally:
             _sys.argv = _old_argv
 
-        for name in shell.files("%s/jobdispenser" % self.dirs['lib'], '*.py'):
+        for name in shell.files("%s/wolfe" % self.dirs['lib'], '*.py'):
             self.compile(name)
         term.write("%(ERASE)s")
 
@@ -579,7 +574,7 @@ class Website(Target):
             self.dirs['_website'], 'src', 'conf.py'
         ), 'a')
         try:
-            fp.write("\nepydoc = dict(jobdispenser=%r)\n" % (
+            fp.write("\nepydoc = dict(wolfe=%r)\n" % (
                 _os.path.join(
                     shell.native(self.dirs['_website']),
                     "src",
@@ -888,7 +883,7 @@ class Version(Target):
     def _version_init(self, strversion, isdev, revision):
         """ Modify version in __init__ """
         filename = _os.path.join(
-            self.dirs['lib'], 'jobdispenser', '__init__.py'
+            self.dirs['lib'], 'wolfe', '__init__.py'
         )
         fp = open(filename)
         try:

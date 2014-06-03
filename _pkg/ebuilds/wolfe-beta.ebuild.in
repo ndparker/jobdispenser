@@ -7,9 +7,9 @@ PYTHON_COMPAT=( python2_7 )
 inherit distutils-r1
 
 MY_P="${P/_beta/-dev-r}"
-DESCRIPTION="Job Dispenser - a reliable task management system"
-HOMEPAGE="http://opensource.perlig.de/jobdispenser/"
-SRC_URI="http://storage.perlig.de/jobdispenser/dev/${MY_P}.tar.gz"
+DESCRIPTION="Wolfe - a reliable job management system"
+HOMEPAGE="http://opensource.perlig.de/wolfe/"
+SRC_URI="http://storage.perlig.de/wolfe/dev/${MY_P}.tar.gz"
 RESTRICT="mirror"
 
 LICENSE="Apache-2.0"

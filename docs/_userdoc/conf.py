@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# JobDispenser documentation build configuration file
+# Wolfe documentation build configuration file
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -36,7 +36,7 @@ source_suffix = '.txt'
 master_doc = 'index'
 
 # General information about the project.
-project = u'JobDispenser'
+project = u'Wolfe'
 copyright = u'2014 Andr\xe9 Malo'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -88,20 +88,20 @@ pygments_style = 'sphinx'
 
 rst_prolog = """
 .. role:: product(emphasis)
-    :class: jobdispenser
+    :class: wolfe
 
-.. |JobDispenser| replace:: :product:`JobDispenser`
+.. |Wolfe| replace:: :product:`Wolfe`
 
 .. role:: productb(strong)
-    :class: jobdispenser
+    :class: wolfe
 
-.. |**JobDispenser**| replace:: :productb:`JobDispenser`
+.. |**Wolfe**| replace:: :productb:`Wolfe`
 """
 
 # -- Options for epydoc extension-----------------------------------------------
 
 epydoc = dict(
-    jobdispenser=os.path.join(os.path.abspath(os.path.pardir), 'apidoc'),
+    wolfe=os.path.join(os.path.abspath(os.path.pardir), 'apidoc'),
 )
 
 # -- Options for HTML output ---------------------------------------------------
@@ -190,7 +190,7 @@ html_show_sourcelink = False
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'JobDispenserdoc'
+htmlhelp_basename = 'Wolfedoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -204,7 +204,7 @@ htmlhelp_basename = 'JobDispenserdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'JobDispenser.tex', u'JobDispenser Documentation',
+  ('index', 'Wolfe.tex', u'Wolfe Documentation',
    u'Andr\xe9 "nd" Malo', 'manual'),
 ]
 

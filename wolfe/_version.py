@@ -19,11 +19,11 @@ u"""
  See the License for the specific language governing permissions and
  limitations under the License.
 
-================
- Misc Utilities
-================
+========================
+ Version Representation
+========================
 
-Misc utilities.
+Version representation.
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
@@ -31,7 +31,7 @@ __docformat__ = "restructuredtext en"
 
 class Version(tuple):
     """
-    Represents the package version
+    Container representing the package version
 
     :IVariables:
       `major` : ``int``
@@ -49,6 +49,7 @@ class Version(tuple):
       `revision` : ``int``
         Internal revision
     """
+    _str = "(unknown)"
 
     def __new__(cls, versionstring, is_dev, revision):
         """
@@ -71,16 +72,33 @@ class Version(tuple):
         # pylint: disable = W0613
         tup = []
         versionstring = versionstring.strip()
+        isuni = isinstance(versionstring, unicode)
+        strs = []
         if versionstring:
             for item in versionstring.split('.'):
                 try:
                     item = int(item)
+                    strs.append(str(item))
                 except ValueError:
-                    pass
+                    if isuni:
+                        strs.append(item.encode('utf-8'))
+                    else:
+                        try:
+                            item = item.decode('ascii')
+                            strs.append(item.encode('ascii'))
+                        except UnicodeError:
+                            try:
+                                item = item.decode('utf-8')
+                                strs.append(item.encode('utf-8'))
+                            except UnicodeError:
+                                strs.append(item)
+                                item = item.decode('latin-1')
                 tup.append(item)
         while len(tup) < 3:
             tup.append(0)
-        return tuple.__new__(cls, tup)
+        self = tuple.__new__(cls, tup)
+        self._str = ".".join(strs)  # pylint: disable = W0212
+        return self
 
     def __init__(self, versionstring, is_dev, revision):
         """
@@ -113,7 +131,7 @@ class Version(tuple):
         return "%s.%s(%r, is_dev=%r, revision=%r)" % (
             self.__class__.__module__,
             self.__class__.__name__,
-            ".".join(map(str, self)),
+            self._str,
             self.is_dev,
             self.revision,
         )
@@ -126,7 +144,7 @@ class Version(tuple):
         :Rtype: ``str``
         """
         return "%s%s" % (
-            ".".join(map(str, self)),
+            self._str,
             ("", "-dev-r%d" % self.revision)[self.is_dev],
         )
 
@@ -137,20 +155,7 @@ class Version(tuple):
         :Return: The unicode representation
         :Rtype: ``unicode``
         """
-        return str(self).decode('ascii')
-
-
-def find_public(space):
-    """
-    Determine all public names in space
-
-    :Parameters:
-      `space` : ``dict``
-        Name space to inspect
-
-    :Return: List of public names
-    :Rtype: ``list``
-    """
-    if space.has_key('__all__'):
-        return list(space['__all__'])
-    return [key for key in space.keys() if not key.startswith('_')]
+        return u"%s%s" % (
+            u".".join(map(unicode, self)),
+            (u"", u"-dev-r%d" % self.revision)[self.is_dev],
+        )

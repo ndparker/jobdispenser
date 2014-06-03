@@ -1,8 +1,10 @@
-===================================================
-  JobDispenser - A Reliable Task Management System
-===================================================
+============================================
+  Wolfe - A Reliable Job Management System
+============================================
 
-JobDispenser is a task management system.
+    I'm Winston Wolfe. I solve problems.  -- Pulp Fiction (1994)
+
+Wolfe is a job management system.
 
 
 Copyright and License
@@ -20,10 +22,10 @@ Bugs
 ~~~~
 
 No bugs, of course. ;-)
-But if you've found one or have an idea how to improve the JobDispenser, feel
+But if you've found one or have an idea how to improve wolfe, feel
 free to send a pull request on `github
-<https://github.com/ndparker/jobdispenser>`_ or send a mail to
-<jobdispenser-bugs@perlig.de>.
+<https://github.com/ndparker/wolfe>`_ or send a mail to
+<wolfe-bugs@perlig.de>.
 
 
 Author Information

@@ -20,26 +20,11 @@ u"""
  limitations under the License.
 
 =========================
- JobDispenser Exceptions
+ Wolfe Integration Tests
 =========================
 
-The module provides all exceptions and warnings used throughout the
-`jobdispenser` package.
+Wolfe Integration Tests.
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
-
-import warnings as _warnings
-
-
-class Error(Exception):
-    """ Base exception for this package """
-
-
-class Warning(Warning): # pylint: disable = W0622
-    """ Base warning for this package """
-
-    @classmethod
-    def emit(cls, message, stacklevel=1):
-        """ Emit a warning of this very category """
-        _warnings.warn(message, cls, max(1, stacklevel) + 1)
+__license__ = "Apache License, Version 2.0"
