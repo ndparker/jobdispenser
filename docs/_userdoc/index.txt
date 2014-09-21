@@ -45,7 +45,7 @@ WRITEME.
 Development Status
 ~~~~~~~~~~~~~~~~~~
 
-Coming up with an architectural plan right now.
+Pre-Alpha.
 
 
 .. placeholder: Download

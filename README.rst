@@ -8,12 +8,13 @@ TABLE OF CONTENTS
 -----------------
 
 1. Introduction
-2. Copyright and License
-3. System Requirements
-4. Installation
-5. Documentation
-6. Bugs
-7. Author Information
+2. Development Status
+3. Copyright and License
+4. System Requirements
+5. Installation
+6. Documentation
+7. Bugs
+8. Author Information
 
 
 INTRODUCTION
@@ -22,6 +23,12 @@ INTRODUCTION
     I'm Winston Wolfe. I solve problems.  -- Pulp Fiction (1994)
 
 Wolfe is a job management system.
+
+
+DEVELOPMENT STATUS
+------------------
+
+Pre-Alpha.
 
 
 COPYRIGHT AND LICENSE
