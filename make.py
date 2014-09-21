@@ -870,15 +870,15 @@ class Version(Target):
 
         self._version_init(strversion, isdev, revision)
         self._version_userdoc(strversion, isdev, revision)
-        self._version_download(strversion, isdev, revision)
+        #self._version_download(strversion, isdev, revision)
         self._version_changes(strversion, isdev, revision)
 
-        parm = {'VERSION': strversion, 'REV': revision}
-        for src, dest in self.ebuild_files.items():
-            src = "%s/%s" % (self.dirs['ebuild'], src)
-            dest = "%s/%s" % (self.dirs['ebuild'], dest % parm)
-            term.green("Creating %(name)s...", name=dest)
-            shell.cp(src, dest)
+        #parm = {'VERSION': strversion, 'REV': revision}
+        #for src, dest in self.ebuild_files.items():
+        #    src = "%s/%s" % (self.dirs['ebuild'], src)
+        #    dest = "%s/%s" % (self.dirs['ebuild'], dest % parm)
+        #    term.green("Creating %(name)s...", name=dest)
+        #    shell.cp(src, dest)
 
     def _version_init(self, strversion, isdev, revision):
         """ Modify version in __init__ """

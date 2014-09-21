@@ -28,7 +28,7 @@ Wolfe - A Reliable Job Management System.
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 __license__ = "Apache License, Version 2.0"
-__version__ = ('0.9.9.8', False, 4809)
+__version__ = ('0.1.0', False, 1)
 
 # pylint: disable = W0611
 from wolfe import _util
