@@ -175,7 +175,7 @@ def test_scheduler_enter_todo(job):
     entered = []
 
     class Scheduler(_scheduler.Scheduler):
-        def enter_job(self, job):
+        def _enter_job(self, job):
             entered.append(job)
 
     ids = _it.count(2).next
@@ -202,7 +202,7 @@ def test_scheduler_enter_todo_cycle(job):
     entered = []
 
     class Scheduler(_scheduler.Scheduler):
-        def enter_job(self, job):
+        def _enter_job(self, job):
             entered.append(job)
 
     job.joblist_from_todo.side_effect = [
@@ -225,7 +225,7 @@ def test_scheduler_enter_todo_cycle(job):
 @mock(_scheduler, '_util', name='util')
 @mock(_scheduler, '_waiting', name='waiting')
 def test_scheduler_enter_job_timed(locks, job_queue, util, waiting):
-    """ Scheduler.enter_job delays the job """
+    """ Scheduler._enter_job delays the job """
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
@@ -235,7 +235,7 @@ def test_scheduler_enter_job_timed(locks, job_queue, util, waiting):
 
     job = Bunch(id=25, not_before=2)
     scheduler = Scheduler('FINI')
-    scheduler.enter_job(job)
+    scheduler._enter_job(job)
 
     assert_equals(scheduler.jobs, {25: job})
     assert_equals(undelayed, [])
@@ -256,7 +256,7 @@ def test_scheduler_enter_job_timed(locks, job_queue, util, waiting):
 @mock(_scheduler, '_util', name='util')
 @mock(_scheduler, '_waiting', name='waiting')
 def test_scheduler_enter_job_undelayed(locks, job_queue, util, waiting):
-    """ Scheduler.enter_job passes job to next state """
+    """ Scheduler._enter_job passes job to next state """
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
@@ -267,7 +267,7 @@ def test_scheduler_enter_job_undelayed(locks, job_queue, util, waiting):
     job = Bunch(id=25, not_before=0)
     scheduler = Scheduler('FINI')
 
-    scheduler.enter_job(job)
+    scheduler._enter_job(job)
 
     assert_equals(scheduler.jobs, {25: job})
     assert_equals(undelayed, [job])

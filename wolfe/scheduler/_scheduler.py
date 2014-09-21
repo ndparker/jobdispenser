@@ -178,11 +178,11 @@ class Scheduler(object):
         for job in _job.joblist_from_todo(todo):
             if job_id is None:
                 job_id = job.id
-            self.enter_job(job)
+            self._enter_job(job)
 
         return job_id
 
-    def enter_job(self, job):
+    def _enter_job(self, job):
         """
         Enter a new job into the system
 
