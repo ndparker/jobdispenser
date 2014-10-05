@@ -36,7 +36,7 @@ import mock as _mock
 from nose.tools import (  # pylint: disable = E0611
     assert_equals, assert_raises, assert_true
 )
-from .._util import mocked
+from ..._util import mocked
 
 from wolfe.scheduler import _util
 
