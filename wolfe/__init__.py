@@ -35,6 +35,7 @@ from wolfe import _util
 from wolfe import _version
 from wolfe._exceptions import *  # noqa pylint: disable = W0401, W0614, W0622
 from wolfe._execution import Executor  # noqa
+from wolfe._lock import Lock  # noqa
 from wolfe._todo import Todo, TodoDescription  # noqa
 from wolfe._main import Main  # noqa
 

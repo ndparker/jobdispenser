@@ -69,6 +69,19 @@ def implements(obj, *interfaces):
     return True
 
 
+class LockInterface(object):  # pragma: nocover
+    """
+    Interface for lock objects
+
+    :IVariables:
+      `name` : ``str``
+        Lock name
+
+      `exclusive` : ``bool``
+        Does this lock has to be acquired exclusively?
+    """
+
+
 class ExecutorInterface(object):  # pragma: no cover
     """
     Interface for executor objects

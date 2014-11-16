@@ -45,6 +45,8 @@ import wolfe as _wolfe
 
 def test_simple():
     """ scheduler: A single job in default group is properly scheduled """
+    _wolfe._todo._lock.validate.side_effect = lambda x: []
+
     exe = _wolfe.Executor('simple')
     todo = _wolfe.TodoDescription('abc').todo()
 
@@ -72,16 +74,16 @@ def test_complex():
 
     todo = _wolfe.TodoDescription('abc').todo()
     todo11 = todo.on_success(_wolfe.TodoDescription('def').todo(
-        locks=['lock1', 'lock2']
+        locks=map(_wolfe.Lock, ['lock1', 'lock2'])
     ))
     todo12 = todo.on_success(_wolfe.TodoDescription('ghi').todo(
-        locks=['lock3']
+        locks=[_wolfe.Lock('lock3')]
     ))
     todo12.on_success(_wolfe.TodoDescription('jkl').todo(
-        locks=['lock1']
+        locks=[_wolfe.Lock('lock1')]
     ))
     todo11.on_success(_wolfe.TodoDescription('mno').todo(
-        locks=['lock1']
+        locks=[_wolfe.Lock('lock1')]
     ))
 
     wolfe = _wolfe.Main()

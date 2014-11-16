@@ -31,7 +31,7 @@ __docformat__ = "restructuredtext en"
 import collections as _collections
 import operator as _op
 
-from wolfe._exceptions import DependencyCycle
+from ._exceptions import DependencyCycle
 
 
 class DependencyGraph(object):

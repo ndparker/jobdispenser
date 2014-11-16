@@ -49,6 +49,11 @@ class _Scheduler(object):
     just_me = id(_locks)
 
 
+def _lock(name, exclusive=True):  # pylint: disable = W0613
+    """ Create lock dummy """
+    return Bunch(**locals())
+
+
 def test_locks_init():
     """ Locks initializes properly """
     scheduler = _Scheduler()
@@ -70,7 +75,7 @@ def test_locks_init():
 def test_locks_enter():
     """ Locks.enter enters locks properly """
     scheduler = _mock.MagicMock()
-    job = Bunch(locks=('foo', 'bar'), id=42)
+    job = Bunch(locks=(_lock('foo'), _lock('bar')), id=42)
 
     locks = _locks.Locks(scheduler)
     locks._acquired['foo'] = 1
@@ -96,8 +101,8 @@ def test_locks_acquire_false():
 def test_locks_acquire_true():
     """ Locks.acquire acquires locks properly """
     scheduler = _mock.MagicMock()
-    job = Bunch(id=24, locks=('foo', 'bar'))
-    job2 = Bunch(id=25, locks=('foo',))
+    job = Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
+    job2 = Bunch(id=25, locks=(_lock('foo'),))
     scheduler.jobs = {24: job, 25: job2}
 
     locks = _locks.Locks(scheduler)
@@ -123,8 +128,9 @@ def test_locks_acquire_true():
 def test_locks_release():
     """ Locks.release releases locks properly """
     scheduler = _mock.MagicMock()
-    job = Bunch(id=24, locks=('foo', 'bar'))
-    job2 = Bunch(id=25, locks=('foo',))
+
+    job = Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
+    job2 = Bunch(id=25, locks=(_lock('foo'),))
     scheduler.jobs = {24: job, 25: job2}
 
     locks = _locks.Locks(scheduler)

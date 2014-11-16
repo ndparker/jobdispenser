@@ -42,10 +42,12 @@ from wolfe import _todo
 
 
 @mock(_todo, '_constants', name='constants')
-def test_todo_init_minimal(constants):
+@mock(_todo, '_lock', name='lock')
+def test_todo_init_minimal(constants, lock):
     """ Todo properly initializes minimalistically"""
     constants.Group.DEFAULT = 'some group'
     constants.Importance.DEFAULT = 23
+    lock.validate.side_effect = lambda x: list(x or ())
 
     todo = _todo.Todo("DESC")
 
@@ -55,16 +57,18 @@ def test_todo_init_minimal(constants):
         'desc': 'DESC',
         'group': 'some group',
         'importance': 23,
-        'locks': set([]),
+        'locks': [],
         'not_before': None,
     })
 
 
 @mock(_todo, '_constants', name='constants')
-def test_todo_init_maximal(constants):
+@mock(_todo, '_lock', name='lock')
+def test_todo_init_maximal(constants, lock):
     """ Todo properly initializes will full arguments """
     constants.Group.DEFAULT = 'some group xx'
     constants.Importance.DEFAULT = 24
+    lock.validate.side_effect = list
 
     other = []
     not_before = object()
@@ -72,7 +76,7 @@ def test_todo_init_maximal(constants):
     todo = _todo.Todo(
         "DESCX",
         depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
-        locks=['krass', 'krasser'],
+        locks=('krass', 'krasser'),
         importance=2,
         group='another group',
         not_before=not_before,
@@ -84,7 +88,7 @@ def test_todo_init_maximal(constants):
         'desc': 'DESCX',
         'group': 'another group',
         'importance': 2,
-        'locks': set(['krass', 'krasser']),
+        'locks': ['krass', 'krasser'],
         'not_before': not_before,
     })
     assert_equals(other, [todo])
@@ -92,19 +96,21 @@ def test_todo_init_maximal(constants):
 
 @mock(_todo, '_dt', name='dt')
 @mock(_todo, '_constants', name='constants')
-def test_todo_init_int_delay(dt, constants):
+@mock(_todo, '_lock', name='lock')
+def test_todo_init_int_delay(dt, constants, lock):
     """ Todo properly initializes will integer delay """
     dt.datetime.utcnow.side_effect = [12]
     dt.timedelta.side_effect = lambda seconds=None: seconds
     constants.Group.DEFAULT = 'some group xx'
     constants.Importance.DEFAULT = 24
+    lock.validate.side_effect = list
 
     other = []
 
     todo = _todo.Todo(
         "DESCX",
         depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
-        locks=['krass', 'krasser'],
+        locks=('krass', 'krasser'),
         importance=2,
         group='another group',
         not_before=17,
@@ -116,17 +122,19 @@ def test_todo_init_int_delay(dt, constants):
         'desc': 'DESCX',
         'group': 'another group',
         'importance': 2,
-        'locks': set(['krass', 'krasser']),
+        'locks': ['krass', 'krasser'],
         'not_before': 29,
     })
     assert_equals(other, [todo])
 
 
 @mock(_todo, '_constants', name='constants')
-def test_todo_on_success(constants):
+@mock(_todo, '_lock', name='lock')
+def test_todo_on_success(constants, lock):
     """ Todo stores and returns successors properly """
     constants.Group.DEFAULT = 'some group xx'
     constants.Importance.DEFAULT = 24
+    lock.validate.side_effect = lambda x: list(x or ())
 
     todo = _todo.Todo("ASdF")
     successor1 = object()
@@ -145,10 +153,12 @@ def test_todo_on_success(constants):
 
 
 @mock(_todo, '_constants', name='constants')
-def test_todo_predecessors(constants):
+@mock(_todo, '_lock', name='lock')
+def test_todo_predecessors(constants, lock):
     """ Todo returns predecessors properly """
     constants.Group.DEFAULT = 'some group xx'
     constants.Importance.DEFAULT = 24
+    lock.validate.side_effect = lambda x: list(x or ())
 
     other = []
 
@@ -160,8 +170,11 @@ def test_todo_predecessors(constants):
     assert_equals(todo.predecessors(), (1, 2, 3))
 
 
-def test_desc_init_minimal():
+@mock(_todo, '_lock', name='lock')
+def test_desc_init_minimal(lock):
     """ TodoDescription properly initializes minimalistically """
+    lock.validate.side_effect = lambda x: list(x or ())
+
     desc = _todo.TodoDescription("DESC")
 
     assert_equals(desc.__dict__, {
@@ -169,20 +182,26 @@ def test_desc_init_minimal():
     })
 
 
-def test_desc_init_maximal():
+@mock(_todo, '_lock', name='lock')
+def test_desc_init_maximal(lock):
     """ TodoDescription properly initializes with full arguments """
-    desc = _todo.TodoDescription("DESC", locks=[4, 8], importance=5, group=6)
+    lock.validate.side_effect = list
+
+    desc = _todo.TodoDescription("DESC", locks=(4, 8), importance=5, group=6)
 
     assert_equals(desc.__dict__, {
-        'group': 6, 'importance': 5, 'locks': (4, 8), 'name': 'DESC'
+        'group': 6, 'importance': 5, 'locks': [4, 8], 'name': 'DESC'
     })
 
 
 @mock(_todo, 'Todo', name='todo_mock')
-def test_desc_todo(todo_mock):
+@mock(_todo, '_lock', name='lock')
+def test_desc_todo(todo_mock, lock):
     """ TodoDescription.todo picks default values """
     todo_mock.side_effect = ['lala']
-    desc = _todo.TodoDescription("DESC", locks=[4, 8], importance=5, group=6)
+    lock.validate.side_effect = list
+
+    desc = _todo.TodoDescription("DESC", locks=(4, 8), importance=5, group=6)
 
     todo = desc.todo()
 
@@ -194,17 +213,20 @@ def test_desc_todo(todo_mock):
             'depends_on': None,
             'group': 6,
             'importance': 5,
-            'locks': (4, 8),
+            'locks': [4, 8],
             'not_before': None
         }
     )])
 
 
 @mock(_todo, 'Todo', name='todo_mock')
-def test_desc_todo_override_defaults(todo_mock):
+@mock(_todo, '_lock', name='lock')
+def test_desc_todo_override_defaults(todo_mock, lock):
     """ TodoDescription.todo overrides default values """
     todo_mock.side_effect = ['lala']
-    desc = _todo.TodoDescription("DESC", locks=[4, 8], importance=5, group=6)
+    lock.validate.side_effect = list
+
+    desc = _todo.TodoDescription("DESC", locks=(4, 8), importance=5, group=6)
 
     todo = desc.todo(
         depends_on=18, locks=[20, 22], importance=23, group=24, not_before=28

@@ -61,8 +61,11 @@ def test_last_job_id():
         assert_equals(_job.last_job_id(), 6)
 
 
-def test_job_init():
+@mock(_job, '_lock', name='lock')
+def test_job_init(lock):
     """ Job properly initializes """
+    lock.validate.side_effect = lambda x: list(x or ())
+
     job = _job.Job(2, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1], "ATT")
 
     assert_equals(job.__dict__, {
@@ -72,7 +75,7 @@ def test_job_init():
         'group': 'GROUP',
         'id': 2,
         'importance': 3,
-        'locks': ('K', 'L'),
+        'locks': ['L', 'K'],
         'locks_waiting': None,
         'not_before': 10,
         'predecessors': set([1]),
@@ -80,9 +83,11 @@ def test_job_init():
     })
 
 
+@mock(_job, '_lock')
 def test_job_depend_on_error():
     """ Job.depend_on raises ValueError on invalid ID """
     job = _job.Job(3, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1, 2], "ATT")
+
     assert_equals(job.predecessors, set([1, 2]))
     with assert_raises(ValueError):
         job.depend_on("lala")
@@ -91,9 +96,11 @@ def test_job_depend_on_error():
     assert_equals(job.predecessors, set([1, 2]))
 
 
+@mock(_job, '_lock')
 def test_job_depend_on_error2():
     """ Job.depend_on raises ValueError on ID outside the range """
     job = _job.Job(4, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1], "ATT")
+
     assert_equals(job.predecessors, set([1]))
     with assert_raises(ValueError):
         job.depend_on(-1)
@@ -104,9 +111,11 @@ def test_job_depend_on_error2():
     assert_equals(job.predecessors, set([1]))
 
 
+@mock(_job, '_lock')
 def test_job_depend_on_ok():
     """ Job.depend_on accepts valid IDs and ignores dupes """
     job = _job.Job(4, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1], "ATT")
+
     assert_equals(job.predecessors, set([1]))
     job.depend_on(1)
     assert_equals(job.predecessors, set([1]))
@@ -116,6 +125,7 @@ def test_job_depend_on_ok():
 
 @mock(_job, 'Job', name='job_class')
 @mock(_job, '_gen_id', name='gen_id')
+@mock(_job, '_lock')
 def test_job_from_todo(gen_id, job_class):
     """ job_from_todo properly initializes a job """
     gen_id.side_effect = [23]
@@ -138,6 +148,7 @@ def test_job_from_todo(gen_id, job_class):
 
 
 @mock(_job, 'job_from_todo', name='job_factory')
+@mock(_job, '_lock')
 def test_joblist_from_todo_simple(job_factory):
     """ joblist_from_todo works in the trivial case """
     gen = _it.count(20).next
@@ -151,6 +162,7 @@ def test_joblist_from_todo_simple(job_factory):
 
 
 @mock(_job, 'job_from_todo', name='job_factory')
+@mock(_job, '_lock')
 def test_joblist_from_todo_tree(job_factory):
     """ joblist_from_todo works for a simple tree """
     gen = _it.count(20).next
@@ -196,6 +208,7 @@ def test_joblist_from_todo_tree(job_factory):
 
 
 @mock(_job, 'job_from_todo', name='job_factory')
+@mock(_job, '_lock')
 def test_joblist_from_todo_dag(job_factory):
     """ joblist_from_todo works for a complex DAG """
     gen = _it.count(20).next
@@ -244,6 +257,7 @@ def test_joblist_from_todo_dag(job_factory):
 
 
 @mock(_job, 'job_from_todo', name='job_factory')
+@mock(_job, '_lock')
 def test_joblist_from_todo_cycle(job_factory):
     """ joblist_from_todo detects cycles """
     gen = _it.count(20).next

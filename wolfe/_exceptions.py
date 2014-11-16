@@ -36,6 +36,10 @@ class Error(Exception):
     """ Base exception for this package """
 
 
+class LockConflict(Error):
+    """ A conflicting set of locks was supplied """
+
+
 class DependencyError(Error):
     """ A dependency error occured """
 

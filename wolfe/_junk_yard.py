@@ -28,7 +28,7 @@ Finished Job Dump.
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
-from wolfe import interfaces as _interfaces
+from . import interfaces as _interfaces
 
 
 class JunkYard(object):

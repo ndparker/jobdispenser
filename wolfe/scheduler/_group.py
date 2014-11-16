@@ -31,8 +31,8 @@ __docformat__ = "restructuredtext en"
 
 import weakref as _weakref
 
-from wolfe.scheduler import _job_queue
-from wolfe.scheduler import _util
+from . import _job_queue
+from . import _util
 
 
 class Group(object):

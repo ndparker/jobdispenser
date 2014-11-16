@@ -32,13 +32,14 @@ __docformat__ = "restructuredtext en"
 
 import time as _time
 
-from wolfe import _constants
-from wolfe.scheduler import _group
-from wolfe.scheduler import _job
-from wolfe.scheduler import _job_queue
-from wolfe.scheduler import _locks
-from wolfe.scheduler import _util
-from wolfe.scheduler import _waiting
+from .. import _constants
+
+from . import _group
+from . import _job
+from . import _job_queue
+from . import _locks
+from . import _util
+from . import _waiting
 
 DependencyCycle = _job.DependencyCycle
 

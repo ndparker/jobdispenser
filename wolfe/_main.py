@@ -30,12 +30,9 @@ __docformat__ = "restructuredtext en"
 
 import time as _time
 
-from wolfe._exceptions import (
-    InvalidExecutorError,
-    JobNotFoundError,
-)
-from wolfe import _junk_yard
-from wolfe import scheduler as _scheduler
+from ._exceptions import InvalidExecutorError, JobNotFoundError
+from . import _junk_yard
+from . import scheduler as _scheduler
 
 
 class Main(object):

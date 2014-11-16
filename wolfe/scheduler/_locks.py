@@ -74,10 +74,12 @@ class Locks(object):
         """
         job.locks_waiting = len(job.locks)
         for lock in job.locks:
-            if lock in self._acquired:
-                self._waiting[lock].add(job.id)
+            assert lock.exclusive
+
+            if lock.name in self._acquired:
+                self._waiting[lock.name].add(job.id)
             else:
-                self._free[lock].add(job.id)
+                self._free[lock.name].add(job.id)
                 job.locks_waiting -= 1
 
         assert job.locks_waiting >= 0
@@ -98,15 +100,15 @@ class Locks(object):
 
         jobs = self._scheduler.jobs
         for lock in job.locks:
-            assert lock not in self._acquired
+            assert lock.name not in self._acquired
 
-            waiting = self._free.pop(lock)
+            waiting = self._free.pop(lock.name)
             waiting.remove(job.id)
             if waiting:
-                self._waiting[lock] = waiting
+                self._waiting[lock.name] = waiting
                 for job_id in waiting:
                     jobs[job_id].locks_waiting += 1
-            self._acquired[lock] = job.id
+            self._acquired[lock.name] = job.id
 
         return True
 
@@ -127,11 +129,11 @@ class Locks(object):
 
         jobs = self._scheduler.jobs
         for lock in job.locks:
-            assert self._acquired[lock] == job.id
+            assert self._acquired[lock.name] == job.id
 
-            del self._acquired[lock]
-            if lock in self._waiting:
-                free = self._free[lock] = self._waiting.pop(lock)
+            del self._acquired[lock.name]
+            if lock.name in self._waiting:
+                free = self._free[lock.name] = self._waiting.pop(lock.name)
                 for job_id in free:
                     jobs[job_id].locks_waiting -= 1
                     if jobs[job_id].locks_waiting == 0:

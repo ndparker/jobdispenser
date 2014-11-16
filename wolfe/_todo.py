@@ -30,7 +30,8 @@ __docformat__ = "restructuredtext en"
 
 import datetime as _dt
 
-from wolfe import _constants
+from . import _constants
+from . import _lock
 
 
 class Todo(object):
@@ -41,7 +42,7 @@ class Todo(object):
       `desc` : `TodoDescription`
         Todo descripton
 
-      `locks` : `set`
+      `locks` : ``list``
         List of locks
 
       `importance` : ``int``
@@ -77,7 +78,7 @@ class Todo(object):
 
           `locks` : iterable
             List of locks. If omitted or ``None``, no locks are acquired for
-            execution. (``[str, ...]``)
+            execution. (``[LockInterface, ...]``)
 
           `importance` : ``int``
             Importance of the todo. If omitted or ``None``, a default
@@ -97,13 +98,14 @@ class Todo(object):
               naive date times, UTC is assumed.
 
             If omitted or ``None``, ``0`` is assumed.
+
+        :Exceptions:
+          - `LockConflict` : Conflicting locks were provided
         """
         self.desc = desc
         self._successors = []
         self._predecessors = []
-        if locks is None:
-            locks = ()
-        self.locks = set(locks)
+        self.locks = _lock.validate(locks)
         if importance is None:
             importance = _constants.Importance.DEFAULT
         self.importance = importance
@@ -205,9 +207,12 @@ class TodoDescription(object):
           `group` : ``str``
             Default group name. If omitted or ``None``, no default group is
             defined.
+
+        :Exceptions:
+          - `LockConflict` : Conflicting locks were provided
         """
         self.name = name
-        self.locks = tuple(locks or ()) or None
+        self.locks = _lock.validate(locks) or None
         self.importance = importance
         self.group = group
 

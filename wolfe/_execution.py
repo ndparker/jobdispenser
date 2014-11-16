@@ -30,7 +30,7 @@ __docformat__ = "restructuredtext en"
 
 import time as _time
 
-from wolfe import interfaces as _interfaces
+from . import interfaces as _interfaces
 
 
 class Executor(object):

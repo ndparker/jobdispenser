@@ -32,8 +32,9 @@ __docformat__ = "restructuredtext en"
 import collections as _collections
 import itertools as _it
 
-from wolfe import _graph
-from wolfe import interfaces as _interfaces
+from .. import _graph
+from .. import interfaces as _interfaces
+from .. import _lock
 
 #: Exception raised on cycles, when a todo DAG is resolved
 DependencyCycle = _graph.DependencyCycle
@@ -85,7 +86,7 @@ class Job(object):
             Job Group
 
           `locks` : iterable
-            List of locks that need to be aquired (``(str, ...)``)
+            List of locks that need to be aquired (``(`LockInterface`, ...)``)
 
           `importance` : ``int``
             Job importance
@@ -115,7 +116,7 @@ class Job(object):
         self.id = job_id  # pylint: disable = C0103
         self.desc = desc
         self.group = group
-        self.locks = tuple(sorted(set(locks or ())))
+        self.locks = _lock.validate(locks)
         self.locks_waiting = None
         self.importance = importance
         self.extra = extra
