@@ -33,7 +33,7 @@ __docformat__ = "restructuredtext en"
 import datetime as _dt
 
 import mock as _mock
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_raises, assert_true
 )
 from ..._util import mocked
@@ -41,7 +41,10 @@ from ..._util import mocked
 from wolfe.scheduler import _util
 
 
-# pylint: disable = W0212, C0111
+# pylint: disable = missing-docstring
+# pylint: disable = invalid-name
+# pylint: disable = unused-argument
+# pylint: disable = protected-access
 
 
 def test_scheduled_time():
@@ -50,7 +53,7 @@ def test_scheduled_time():
             self.not_before = not_before
 
     class tzinfo(_dt.tzinfo):
-        def utcoffset(self, dt):  # pylint: disable = W0613
+        def utcoffset(self, dt):
             return _dt.timedelta(0)
 
     _util._time = _mock.Mock()

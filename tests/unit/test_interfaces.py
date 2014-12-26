@@ -31,14 +31,17 @@ __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_true, assert_false
 )
 from .._util import Bunch
 
 from wolfe import interfaces as _interfaces
 
-# pylint: disable = C0111, C1001, W0232
+
+# pylint: disable = missing-docstring
+# pylint: disable = old-style-class
+# pylint: disable = no-init
 
 
 # test interfaces

@@ -139,4 +139,4 @@ class Locks(object):
                     if jobs[job_id].locks_waiting == 0:
                         candidates.add(job_id)
 
-        return map(lambda x: jobs[x], candidates)  # pylint: disable = W0110
+        return [jobs[x] for x in candidates]

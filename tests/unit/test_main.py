@@ -31,14 +31,15 @@ __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_false,
 )
 from .._util import mock, Bunch
 
 from wolfe import _main
 
-# pylint: disable = W0212, W0613, W0108
+
+# pylint: disable = protected-access
 
 
 @mock(_main, '_junk_yard', name='junk_yard')
@@ -89,7 +90,7 @@ def test_finish_job(time):
 
     time.time.side_effect = [123]
     main._scheduler.execution_attempt.side_effect = \
-        lambda x: {23: Bunch(executor='ex1')}.get(x)
+        {23: Bunch(executor='ex1')}.get
     main.finish_job('ex1', 23, 'result')
 
     assert_equals(map(tuple, main._scheduler.finish_job.mock_calls), [
@@ -106,7 +107,7 @@ def test_finish_job_1(time):
 
     time.time.side_effect = [123]
     main._scheduler.execution_attempt.side_effect = \
-        lambda x: {23: Bunch(executor='ex2')}.get(x)
+        {23: Bunch(executor='ex2')}.get
     try:
         main.finish_job('ex1', 23, 'result')
     except _main.InvalidExecutorError, e:
@@ -124,7 +125,7 @@ def test_finish_job_2(time):
 
     time.time.side_effect = [123]
     main._scheduler.execution_attempt.side_effect = \
-        lambda x: {24: Bunch(executor='ex2')}.get(x)
+        {24: Bunch(executor='ex2')}.get
     try:
         main.finish_job('ex1', 23, 'result')
     except _main.JobNotFoundError, e:

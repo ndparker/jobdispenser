@@ -30,7 +30,7 @@ from __future__ import with_statement
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals,
 )
 

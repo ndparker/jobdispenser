@@ -33,7 +33,7 @@ __docformat__ = "restructuredtext en"
 import itertools as _it
 import operator as _op
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_false, assert_true, assert_raises
 )
 import mock as _mock
@@ -42,7 +42,10 @@ from ..._util import mock, Bunch
 
 from wolfe.scheduler import _scheduler
 
-# pylint: disable = C0111, W0212
+
+# pylint: disable = protected-access
+# pylint: disable = missing-docstring
+# pylint: disable = no-member
 
 
 @mock(_scheduler, '_locks', name='locks')
@@ -563,15 +566,12 @@ def test_scheduler_request_job(locks, job_queue, util, waiting):
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
-    # pylint: disable = E1101
-
     class Scheduler(_scheduler.Scheduler):
         def _undelay_jobs(self):
             undelayed.append(1)
 
     class Job(Bunch):
         def __lt__(self, other):
-            # pylint: disable = E1101
             return self.order < other.order or self.job.id < other.job.id
 
     job1 = Job(order=6, job=Bunch(id=10))
@@ -638,15 +638,12 @@ def test_scheduler_request_job_default(locks, job_queue, util, waiting,
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
-    # pylint: disable = E1101
-
     class Scheduler(_scheduler.Scheduler):
         def _undelay_jobs(self):
             undelayed.append(1)
 
     class Job(Bunch):
         def __lt__(self, other):
-            # pylint: disable = E1101
             return self.order < other.order or self.job.id < other.job.id
 
     job1 = Job(order=6, job=Bunch(id=10))
@@ -708,15 +705,12 @@ def test_scheduler_request_job_again(locks, job_queue, util, waiting):
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
-    # pylint: disable = E1101
-
     class Scheduler(_scheduler.Scheduler):
         def _undelay_jobs(self):
             undelayed.append(1)
 
     class Job(Bunch):
         def __lt__(self, other):
-            # pylint: disable = E1101
             return self.order < other.order or self.job.id < other.job.id
 
     job1 = Job(order=6, job=Bunch(id=10))
@@ -789,15 +783,12 @@ def test_scheduler_request_job_none_1(locks, job_queue, util, waiting):
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
-    # pylint: disable = E1101
-
     class Scheduler(_scheduler.Scheduler):
         def _undelay_jobs(self):
             undelayed.append(1)
 
     class Job(Bunch):
         def __lt__(self, other):
-            # pylint: disable = E1101
             return self.order < other.order or self.job.id < other.job.id
 
     job1 = Job(order=6, job=Bunch(id=10))
@@ -856,15 +847,12 @@ def test_scheduler_request_job_none_2(locks, job_queue, util, waiting):
     util.DelayedJob = 'DELAYEDJOB'
     undelayed = []
 
-    # pylint: disable = E1101
-
     class Scheduler(_scheduler.Scheduler):
         def _undelay_jobs(self):
             undelayed.append(1)
 
     class Job(Bunch):
         def __lt__(self, other):
-            # pylint: disable = E1101
             return self.order < other.order or self.job.id < other.job.id
 
     job1 = Job(order=6, job=Bunch(id=10))

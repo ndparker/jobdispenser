@@ -31,14 +31,15 @@ __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_false, assert_true,
 )
 from .._util import mock, Bunch
 
 from wolfe import _execution
 
-# pylint: disable = E1101
+
+# pylint: disable = no-member
 
 
 def test_executor_init_1():

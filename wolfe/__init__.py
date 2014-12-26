@@ -30,10 +30,10 @@ __docformat__ = "restructuredtext en"
 __license__ = "Apache License, Version 2.0"
 __version__ = ('0.1.0', False, 1)
 
-# pylint: disable = W0611
+# pylint: disable = W0622, W0614, W0611, W0401
 from wolfe import _util
 from wolfe import _version
-from wolfe._exceptions import *  # noqa pylint: disable = W0401, W0614, W0622
+from wolfe._exceptions import *  # noqa
 from wolfe._execution import Executor  # noqa
 from wolfe._lock import Lock  # noqa
 from wolfe._todo import Todo, TodoDescription  # noqa

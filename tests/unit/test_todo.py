@@ -31,14 +31,16 @@ __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals,
 )
 from .._util import mock, Bunch
 
 from wolfe import _todo
 
-# pylint: disable = C0103, W0212
+
+# pylint: disable = invalid-name
+# pylint: disable = protected-access
 
 
 @mock(_todo, '_constants', name='constants')

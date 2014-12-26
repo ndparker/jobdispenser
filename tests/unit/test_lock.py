@@ -31,14 +31,12 @@ __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_raises
 )
 from .._util import Bunch
 
 from wolfe import _lock
-
-# pylint: disable = C0103
 
 
 def test_lock_init_minimal():

@@ -30,7 +30,7 @@ from __future__ import with_statement, absolute_import
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_false, assert_true, assert_raises
 )
 import mock as _mock
@@ -39,7 +39,12 @@ from ..._util import Bunch, mock
 
 from wolfe.scheduler import _group
 
-# pylint: disable=W0212,W0104
+
+# pylint: disable = protected-access
+# pylint: disable = no-member
+# pylint: disable = pointless-statement
+# pylint: disable = invalid-name
+# pylint: disable = missing-docstring
 
 
 class _Scheduler(object):
@@ -59,13 +64,13 @@ def test_group_init(job_queue, util):
 
     assert_equals(group.name, 'foo')
     assert_equals(group._locks, 'locks')
-    assert queue is group._queue
+    assert_true(queue is group._queue)
     assert_equals(map(tuple, job_queue.JobQueue.mock_calls), [
         ('', ('laber',), {}),
     ])
     assert_equals(group._scheduler.just_me, scheduler.just_me)
     assert_false(group)
-    group._queue.append(1)  # pylint: disable = E1101
+    group._queue.append(1)
     assert_true(group)
 
     # scheduler should be weakref'd. Test that by deleting our reference:
@@ -151,8 +156,8 @@ def test_group_peek_empty(job_queue):
 @mock(_group, '_util')
 def test_group_peek_something(job_queue):
     """ Group.peek returns the tip if not empty """
-    class queue(list):  # pylint: disable = C0111
-        def peek(self):  # pylint: disable = C0111
+    class queue(list):
+        def peek(self):
             return self[0]
     queue = queue([4])
     job_queue.JobQueue.side_effect = lambda x: queue
@@ -166,8 +171,8 @@ def test_group_peek_something(job_queue):
 @mock(_group, '_util')
 def test_group_get_something(job_queue):
     " Group.get extracts the tip if not empty, raises IndexError otherwise "
-    class queue(list):  # pylint: disable = C0111
-        def get(self):  # pylint: disable = C0111
+    class queue(list):
+        def get(self):
             return self.pop(0)
     queue = queue([4, 5])
     job_queue.JobQueue.side_effect = lambda x: queue

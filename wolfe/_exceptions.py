@@ -60,7 +60,7 @@ class InvalidExecutorError(Error):
     """ A job was finished by a different executor than it was started """
 
 
-class Warning(Warning):  # pylint: disable = W0622
+class Warning(Warning):  # pylint: disable = W0622, E0602
     """
     Base warning for this package
 

@@ -32,7 +32,7 @@ __docformat__ = "restructuredtext en"
 
 import itertools as _it
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_true, assert_raises
 )
 
@@ -40,7 +40,9 @@ from .._util import Bunch, mock
 
 import wolfe as _wolfe
 
-# pylint: disable = E1103, W0212
+
+# pylint: disable = protected-access
+# pylint: disable = no-member
 
 
 def test_simple():

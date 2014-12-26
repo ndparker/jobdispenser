@@ -30,18 +30,21 @@ __docformat__ = "restructuredtext en"
 
 import types as _types
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals,
 )
 
 from wolfe import _util
 
 
+# pylint: disable = protected-access
+
+
 def test_find_public_symbols():
     """ find_public finds all non underscored symbols """
     mod = _types.ModuleType('lala')
     mod.a = 1
-    mod._b = 2  # pylint: disable = W0212
+    mod._b = 2
 
     assert_equals(_util.find_public(vars(mod)), ['a'])
 

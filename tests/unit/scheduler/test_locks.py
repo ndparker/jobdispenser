@@ -32,7 +32,7 @@ __docformat__ = "restructuredtext en"
 
 import collections as _collections
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_raises, assert_false, assert_true,
 )
 import mock as _mock
@@ -41,7 +41,11 @@ from ..._util import Bunch
 
 from wolfe.scheduler import _locks
 
-# pylint: disable = W0212, W0104, E1101
+
+# pylint: disable = unused-argument
+# pylint: disable = protected-access
+# pylint: disable = pointless-statement
+# pylint: disable = no-member
 
 
 class _Scheduler(object):
@@ -49,7 +53,7 @@ class _Scheduler(object):
     just_me = id(_locks)
 
 
-def _lock(name, exclusive=True):  # pylint: disable = W0613
+def _lock(name, exclusive=True):
     """ Create lock dummy """
     return Bunch(**locals())
 

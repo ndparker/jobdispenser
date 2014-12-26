@@ -113,7 +113,7 @@ class Job(object):
           `attempts` : ``list``
             execution attempts (``[ExecutionAttemptInterface, ...]``)
         """
-        self.id = job_id  # pylint: disable = C0103
+        self.id = job_id
         self.desc = desc
         self.group = group
         self.locks = _lock.validate(locks)

@@ -30,7 +30,7 @@ from __future__ import with_statement, absolute_import
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_false, assert_true, assert_raises
 )
 
@@ -38,7 +38,8 @@ from ..._util import Bunch
 
 from wolfe.scheduler import _job_queue
 
-# pylint: disable=W0212
+
+# pylint: disable = protected-access
 
 
 class Wrapper(object):

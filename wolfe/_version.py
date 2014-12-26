@@ -70,6 +70,7 @@ class Version(tuple):
         :Rtype: `version`
         """
         # pylint: disable = W0613
+
         tup = []
         versionstring = versionstring.strip()
         isuni = isinstance(versionstring, unicode)
@@ -116,6 +117,7 @@ class Version(tuple):
             Internal revision
         """
         # pylint: disable = W0613
+
         super(Version, self).__init__()
         self.major, self.minor, self.patch = self[:3]
         self.is_dev = bool(is_dev)

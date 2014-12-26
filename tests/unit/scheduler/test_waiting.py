@@ -32,7 +32,7 @@ __docformat__ = "restructuredtext en"
 
 import collections as _collections
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_raises, assert_false, assert_true,
 )
 import mock as _mock
@@ -41,7 +41,10 @@ from ..._util import Bunch
 
 from wolfe.scheduler import _waiting
 
-# pylint: disable=W0212,W0104
+
+# pylint: disable = protected-access
+# pylint: disable = pointless-statement
+# pylint: disable = no-member
 
 
 class _Scheduler(object):
@@ -116,7 +119,6 @@ def test_waiting_free():
     assert_true(waiting.put(job))
     assert_true(waiting.put(job2))
 
-    # pylint: disable = E1101
     assert_equals(job.predecessors_waiting, 1)
     assert_equals(job2.predecessors_waiting, 2)
 

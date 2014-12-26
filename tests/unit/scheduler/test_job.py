@@ -33,14 +33,15 @@ __docformat__ = "restructuredtext en"
 import itertools as _it
 import operator as _op
 
-from nose.tools import (  # pylint: disable = E0611
+from nose.tools import (
     assert_equals, assert_raises, assert_false,
 )
 from ..._util import mock, mocked, Bunch
 
 from wolfe.scheduler import _job
 
-# pylint: disable = C0111
+
+# pylint: disable = missing-docstring
 
 
 def test_last_job_id():
