@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -30,7 +30,7 @@ __docformat__ = "restructuredtext en"
 __license__ = "Apache License, Version 2.0"
 __version__ = ('0.1.0', False, 1)
 
-# pylint: disable = W0622, W0614, W0611, W0401
+# pylint: disable = redefined-builtin, wildcard-import
 from wolfe import _util
 from wolfe import _version
 from wolfe._exceptions import *  # noqa

@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -81,6 +81,7 @@ class Executor(object):
         :Return: The result container
         :Rtype: `ExecutionResultInterface`
         """
+        # pylint: disable = no-self-use
         return Result(exit_code, stdout, stderr)
 
 

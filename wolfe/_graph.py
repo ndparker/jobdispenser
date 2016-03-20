@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2013 - 2014
+ Copyright 2013 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -96,7 +96,7 @@ class DependencyGraph(object):
         leaves = set(incoming.iterkeys()) - set(outgoing.iterkeys())
 
         roots.sort()  # ensure stable output
-        roots = _collections.deque(roots)
+        roots = _collections.deque(roots)  # noqa pylint: disable = redefined-variable-type
         roots_push, roots_pop = roots.appendleft, roots.pop
         result_push, opop, ipop = result.append, outgoing.pop, incoming.pop
         while roots:

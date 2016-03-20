@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -59,6 +59,8 @@ def last_job_id():
 
     # __reduce__ returns the factory ('count') and the argument tuple
     # containing the initial value (advanced with each call to next())
+
+    # pylint: disable = no-member
     return _gen_id.__self__.__reduce__()[1][0] - 1
 
 

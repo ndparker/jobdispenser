@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -131,7 +131,8 @@ def scheduled_time(job):
         if not_before.tzinfo is not None:
             if _pytz is None:
                 raise RuntimeError("Need pytz for timezone support")
-            now = _pytz.UTC.localize(now)  # pylint: disable = E1120
+            # pylint: disable = no-value-for-parameter
+            now = _pytz.UTC.localize(now)
         not_before = max(0, int((not_before - now).total_seconds()))
 
     return time_now + not_before

@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -28,5 +28,4 @@ Scheduler logic.
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
-# pylint: disable = W0611
 from wolfe.scheduler._scheduler import Scheduler  # noqa

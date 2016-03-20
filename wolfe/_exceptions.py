@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -60,7 +60,7 @@ class InvalidExecutorError(Error):
     """ A job was finished by a different executor than it was started """
 
 
-class Warning(Warning):  # pylint: disable = W0622, E0602
+class Warning(Warning):  # noqa pylint: disable = redefined-builtin, undefined-variable
     """
     Base warning for this package
 

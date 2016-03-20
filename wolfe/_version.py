@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -49,6 +49,8 @@ class Version(tuple):
       `revision` : ``int``
         Internal revision
     """
+    # pylint: disable = unused-argument
+
     _str = "(unknown)"
 
     def __new__(cls, versionstring, is_dev, revision):
@@ -69,8 +71,6 @@ class Version(tuple):
         :Return: New version instance
         :Rtype: `version`
         """
-        # pylint: disable = W0613
-
         tup = []
         versionstring = versionstring.strip()
         isuni = isinstance(versionstring, unicode)
@@ -98,7 +98,7 @@ class Version(tuple):
         while len(tup) < 3:
             tup.append(0)
         self = tuple.__new__(cls, tup)
-        self._str = ".".join(strs)  # pylint: disable = W0212
+        self._str = ".".join(strs)  # pylint: disable = protected-access
         return self
 
     def __init__(self, versionstring, is_dev, revision):
@@ -116,8 +116,6 @@ class Version(tuple):
           `revision` : ``int``
             Internal revision
         """
-        # pylint: disable = W0613
-
         super(Version, self).__init__()
         self.major, self.minor, self.patch = self[:3]
         self.is_dev = bool(is_dev)

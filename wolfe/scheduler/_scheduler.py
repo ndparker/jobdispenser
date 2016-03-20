@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -323,6 +323,8 @@ class Scheduler(object):
             if group in self._groups:
                 group = self._groups[group]
                 queued_job = group.peek()
+
+                # pylint: disable = unsubscriptable-object
                 if queued_job is not None and \
                         (found is None or queued_job < found[0]):
                     found = queued_job, group
