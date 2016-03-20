@@ -1,48 +1,64 @@
 #!/usr/bin/env python
-# -*- coding: ascii -*-
-#
-# Copyright 2006 - 2016
-# Andr\xe9 Malo or his licensors, as applicable
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""
+# -*- coding: ascii -*-  pylint: skip-file
+r"""
+:Copyright:
+
+ Copyright 2006 - 2016
+ Andr\xe9 Malo or his licensors, as applicable
+
+:License:
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
 ===============
  Build targets
 ===============
 
 Build targets.
+
 """
-__author__ = "Andr\xe9 Malo"
-__author__ = getattr(__author__, 'decode', lambda x: __author__)('latin-1')
+if __doc__:
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
+import errno as _errno
 import os as _os
 import re as _re
 import sys as _sys
 
-from _setup import dist
 from _setup import shell
 from _setup import make
 from _setup import term
 from _setup.make import targets
 
-if _sys.version_info[0] == 3:
+
+if _sys.version_info[0] >= 3:
+    py3 = 1
     cfgread = dict(encoding='utf-8')
+
     def textopen(*args):
         return open(*args, **cfgread)
+    exec ("def reraise(*e): raise e[1].with_traceback(e[2])")
 else:
+    py3 = 0
+    try:
+        True
+    except NameError:
+        exec ("True = 1; False = 0")
     textopen = open
     cfgread = {}
+    exec ("def reraise(*e): raise e[0], e[1], e[2]")
 
 
 class Target(make.Target):
@@ -57,7 +73,7 @@ class Target(make.Target):
             'userdoc_source': 'docs/_userdoc',
             'userdoc_build': 'docs/_userdoc/_build',
             'website': 'dist/website',
-            '_website': '_website', # source dir
+            '_website': '_website',  # source dir
             'dist': 'dist',
             'build': 'build',
             'ebuild': '_pkg/ebuilds',
@@ -124,7 +140,7 @@ class NoseTest(Target):
 class Compile(Target):
     """ Compile the python code """
     NAME = "compile"
-    #DEPS = None
+    # DEPS = None
 
     def run(self):
         import setup
@@ -156,7 +172,7 @@ class Compile(Target):
     def compile(self, name):
         path = shell.native(name)
         term.write("%(ERASE)s%(BOLD)s>>> Compiling %(name)s...%(NORMAL)s",
-            name=name)
+                   name=name)
         from distutils import util
         try:
             from distutils import log
@@ -207,6 +223,7 @@ class ApiDoc(Target):
         from _setup.dev import apidoc
         apidoc.epydoc(
             prepend=[
+                shell.native(self.dirs['fake']),
                 shell.native(self.dirs['lib']),
             ],
             env={'WOLFE_NO_C_OVERRIDE': '1', 'EPYDOC_INSPECTOR': '1'}
@@ -221,7 +238,7 @@ class ApiDoc(Target):
 class UserDoc(Target):
     """ Build the user docs """
     NAME = "userdoc"
-    #DEPS = None
+    # DEPS = None
 
     def run(self):
         from _setup.dev import userdoc
@@ -304,8 +321,7 @@ class Website(Target):
                 ),
             ))
             fp.write("\nexclude_trees.append(%r)\n" %
-                "doc-%d.%d" % shortversion
-            )
+                     "doc-%d.%d" % shortversion)
         finally:
             fp.close()
         from _setup.dev import userdoc
@@ -331,7 +347,7 @@ class PreCheck(Target):
 
 class SVNRelease(Target):
     """ Release current version """
-    #NAME = "release"
+    # NAME = "release"
     DEPS = None
 
     def run(self):
@@ -373,7 +389,8 @@ class SVNRelease(Target):
         """ Update versions """
         self.runner('revision', 'version', seen={})
         svn = shell.frompath('svn')
-        shell.spawn(svn, 'commit', '-m', 'Pre-release: version update',
+        shell.spawn(
+            svn, 'commit', '-m', 'Pre-release: version update',
             echo=True
         )
 
@@ -392,7 +409,7 @@ class SVNRelease(Target):
                     text.append(node.data)
         finally:
             info.unlink()
-        return ''.join(text).encode('utf-8')
+        return (''.decode('ascii')).join(text).encode('utf-8')
 
     def _check_committed(self):
         """ Check if everything is committed """
@@ -402,7 +419,8 @@ class SVNRelease(Target):
             if not match:
                 make.fail("Not in trunk or release branch!")
         svn = shell.frompath('svn')
-        lines = shell.spawn(svn, 'stat', '--ignore-externals',
+        lines = shell.spawn(
+            svn, 'stat', '--ignore-externals',
             stdout=True, env=dict(_os.environ, LC_ALL='C'),
         ).splitlines()
         for line in lines:
@@ -413,7 +431,7 @@ class SVNRelease(Target):
 
 class GitRelease(Target):
     """ Release current version """
-    #NAME = "release"
+    # NAME = "release"
     DEPS = None
 
     def run(self):
@@ -445,13 +463,13 @@ class GitRelease(Target):
         self.runner('revision', 'version', seen={})
         git = shell.frompath('git')
         shell.spawn(git, 'commit', '-a', '-m', 'Pre-release: version update',
-            echo=True
-        )
+                    echo=True)
 
     def _check_committed(self):
         """ Check if everything is committed """
         git = shell.frompath('git')
-        lines = shell.spawn(git, 'branch', '--color=never',
+        lines = shell.spawn(
+            git, 'branch', '--color=never',
             stdout=True, env=dict(_os.environ, LC_ALL='C')
         ).splitlines()
         for line in lines:
@@ -466,7 +484,8 @@ class GitRelease(Target):
             if not match:
                 make.fail("Not in master or release branch.")
 
-        lines = shell.spawn(git, 'status', '--porcelain',
+        lines = shell.spawn(
+            git, 'status', '--porcelain',
             stdout=True, env=dict(_os.environ, LC_ALL='C'),
         )
         if lines:
@@ -475,13 +494,13 @@ class GitRelease(Target):
 
 class Release(GitRelease):
     NAME = "release"
-    #DEPS = None
+    # DEPS = None
 
 
 class SVNRevision(Target):
     """ Insert the svn revision into all relevant files """
-    #NAME = "revision"
-    #DEPS = None
+    # NAME = "revision"
+    # DEPS = None
 
     def run(self):
         revision = self._revision()
@@ -525,8 +544,8 @@ class SVNRevision(Target):
 
 class SimpleRevision(Target):
     """ Update the revision number and insert into all relevant files """
-    #NAME = "revision"
-    #DEPS = None
+    # NAME = "revision"
+    # DEPS = None
 
     def run(self):
         self._revision_cfg()
@@ -560,13 +579,13 @@ GitRevision = SimpleRevision
 class Revision(GitRevision):
     """ Insert the revision into all relevant files """
     NAME = "revision"
-    #DEPS = None
+    # DEPS = None
 
 
 class Version(Target):
     """ Insert the program version into all relevant files """
     NAME = "version"
-    #DEPS = None
+    # DEPS = None
 
     def run(self):
         from _setup.util import SafeConfigParser as parser
@@ -578,21 +597,19 @@ class Version(Target):
 
         self._version_init(strversion, isdev, revision)
         self._version_userdoc(strversion, isdev, revision)
-        #self._version_download(strversion, isdev, revision)
+        # self._version_download(strversion, isdev, revision)
         self._version_changes(strversion, isdev, revision)
 
-        #parm = {'VERSION': strversion, 'REV': revision}
-        #for src, dest in self.ebuild_files.items():
-        #    src = "%s/%s" % (self.dirs['ebuild'], src)
-        #    dest = "%s/%s" % (self.dirs['ebuild'], dest % parm)
-        #    term.green("Creating %(name)s...", name=dest)
-        #    shell.cp(src, dest)
+        # parm = {'VERSION': strversion, 'REV': revision}
+        # for src, dest in self.ebuild_files.items():
+        #     src = "%s/%s" % (self.dirs['ebuild'], src)
+        #     dest = "%s/%s" % (self.dirs['ebuild'], dest % parm)
+        #     term.green("Creating %(name)s...", name=dest)
+        #     shell.cp(src, dest)
 
     def _version_init(self, strversion, isdev, revision):
         """ Modify version in __init__ """
-        filename = _os.path.join(
-            self.dirs['lib'], 'wolfe', '__init__.py'
-        )
+        filename = _os.path.join(self.dirs['lib'], 'wolfe', '__init__.py')
         fp = textopen(filename)
         try:
             initlines = fp.readlines()
@@ -668,9 +685,10 @@ class Version(Target):
             oldstable = []
             hasstable = False
             try:
-                fp = open(filename)
-            except IOError, e:
-                if e[0] != _errno.ENOENT:
+                fp = textopen(filename)
+            except IOError:
+                e = _sys.exc_info()[1]
+                if e.args[0] != _errno.ENOENT:
                     raise
             else:
                 try:
@@ -684,7 +702,7 @@ class Version(Target):
                 dllines = oldstable
             else:
                 VERSION = "%s-dev-%s" % (strversion, revision)
-                PATH='dev/'
+                PATH = 'dev/'
         newdev = []
         fp = textopen(filename + '.in')
         try:
@@ -710,7 +728,8 @@ class Version(Target):
                     instable.append(line)
                     if line.startswith('.. end stable'):
                         if not isdev:
-                            res = (''.join(instable)
+                            res = (
+                                ''.join(instable)
                                 .replace('@@VERSION@@', strversion)
                                 .replace('@@PATH@@', '')
                             )
@@ -726,7 +745,8 @@ class Version(Target):
                         if isdev:
                             if newdev:
                                 indev = newdev
-                            fp.write(''.join(indev)
+                            fp.write(
+                                ''.join(indev)
                                 .replace('@@DEVVERSION@@', "%s-dev-r%d" % (
                                     strversion, revision
                                 ))
@@ -742,7 +762,8 @@ class Version(Target):
                 elif isdev and hasstable:
                     fp.write(line)
                 else:
-                    fp.write(line
+                    fp.write(
+                        line
                         .replace('@@VERSION@@', VERSION)
                         .replace('@@PATH@@', PATH)
                     )
