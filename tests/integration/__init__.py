@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -29,5 +29,6 @@ __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 __license__ = "Apache License, Version 2.0"
 
-if 0:  # enable to disable integration tests
+# enable to disable integration tests:
+if 1:  # pylint: disable = using-constant-test
     __path__ = []

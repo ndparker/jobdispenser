@@ -130,6 +130,40 @@ def test_todo_init_int_delay(dt, constants, lock):
     assert_equals(other, [todo])
 
 
+@mock(_todo, '_dt', name='dt')
+@mock(_todo, '_constants', name='constants')
+@mock(_todo, '_lock', name='lock')
+def test_todo_init_int_minus_delay(dt, constants, lock):
+    """ Todo properly initializes will negative integer delay """
+    dt.datetime.utcnow.side_effect = [12]
+    dt.timedelta.side_effect = lambda seconds=None: seconds
+    constants.Group.DEFAULT = 'some group xx'
+    constants.Importance.DEFAULT = 24
+    lock.validate.side_effect = list
+
+    other = []
+
+    todo = _todo.Todo(
+        "DESCX",
+        depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
+        locks=('krass', 'krasser'),
+        importance=2,
+        group='another group',
+        not_before=-17,
+    )
+
+    assert_equals(todo.__dict__, {
+        '_predecessors': [1, 2, 3],
+        '_successors': [],
+        'desc': 'DESCX',
+        'group': 'another group',
+        'importance': 2,
+        'locks': ['krass', 'krasser'],
+        'not_before': 0,
+    })
+    assert_equals(other, [todo])
+
+
 @mock(_todo, '_constants', name='constants')
 @mock(_todo, '_lock', name='lock')
 def test_todo_on_success(constants, lock):

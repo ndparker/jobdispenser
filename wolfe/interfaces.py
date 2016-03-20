@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -157,7 +157,7 @@ class JunkYardInterface(object):  # pragma: no cover
         """
 
 
-class JobInterface(object):
+class JobInterface(object):  # pragma: no cover
     """
     Interface for jobs after they have been finished
 

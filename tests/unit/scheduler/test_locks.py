@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -135,31 +135,46 @@ def test_locks_release():
 
     job = Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
     job2 = Bunch(id=25, locks=(_lock('foo'),))
-    scheduler.jobs = {24: job, 25: job2}
+    job3 = Bunch(id=26, locks=(_lock('bar'),))
+    scheduler.jobs = {24: job, 25: job2, 26: job3}
 
     locks = _locks.Locks(scheduler)
     locks._acquired['baz'] = 3
     locks.enter(job)
     locks.enter(job2)
+    locks.enter(job3)
 
     assert_equals(job.locks_waiting, 0)
     assert_equals(job2.locks_waiting, 0)
+    assert_equals(job3.locks_waiting, 0)
     assert_equals(locks._waiting, {})
-    assert_equals(locks._free, {'foo': set([24, 25]), 'bar': set([24])})
+    assert_equals(locks._free, {'foo': set([24, 25]), 'bar': set([24, 26])})
     assert_equals(locks._acquired, {'baz': 3})
 
     assert_true(locks.acquire(job2))
+    assert_true(locks.acquire(job3))
+
+    assert_equals(job.locks_waiting, 2)
+    assert_equals(job2.locks_waiting, 0)
+    assert_equals(job3.locks_waiting, 0)
+    assert_equals(locks._waiting, {'foo': set([24]), 'bar': set([24])})
+    assert_equals(locks._free, {})
+    assert_equals(locks._acquired, {'baz': 3, 'foo': 25, 'bar': 26})
+
+    assert_equals(locks.release(job2), [])
 
     assert_equals(job.locks_waiting, 1)
     assert_equals(job2.locks_waiting, 0)
-    assert_equals(locks._waiting, {'foo': set([24])})
-    assert_equals(locks._free, {'bar': set([24])})
-    assert_equals(locks._acquired, {'baz': 3, 'foo': 25})
+    assert_equals(job3.locks_waiting, 0)
+    assert_equals(locks._waiting, {'bar': set([24])})
+    assert_equals(locks._free, {'foo': set([24])})
+    assert_equals(locks._acquired, {'baz': 3, 'bar': 26})
 
-    assert_equals(locks.release(job2), [job])
+    assert_equals(locks.release(job3), [job])
 
     assert_equals(job.locks_waiting, 0)
     assert_equals(job2.locks_waiting, 0)
+    assert_equals(job3.locks_waiting, 0)
     assert_equals(locks._waiting, {})
     assert_equals(locks._free, {'foo': set([24]), 'bar': set([24])})
     assert_equals(locks._acquired, {'baz': 3})

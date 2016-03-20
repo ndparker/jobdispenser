@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -68,6 +68,13 @@ def test_attributes():
     assert_equals(ver.patch, 4)
     assert_equals(ver.revision, 6)
     assert_false(ver.is_dev)
+
+
+def test_empty():
+    """ Version deals with empty version string """
+    ver = _version.Version("", True, 5)
+    assert_equals(str(ver), "-dev-r5")
+    assert_equals(tuple(ver), (0, 0, 0))
 
 
 def test_string():
