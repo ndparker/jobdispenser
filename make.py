@@ -223,7 +223,6 @@ class ApiDoc(Target):
         from _setup.dev import apidoc
         apidoc.epydoc(
             prepend=[
-                shell.native(self.dirs['fake']),
                 shell.native(self.dirs['lib']),
             ],
             env={'WOLFE_NO_C_OVERRIDE': '1', 'EPYDOC_INSPECTOR': '1'}
