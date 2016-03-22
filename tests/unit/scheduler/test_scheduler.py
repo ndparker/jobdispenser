@@ -512,6 +512,38 @@ def test_scheduler_undelay_jobs_both(locks, job_queue, util, waiting, time):
 @mock(_scheduler, '_job_queue', name='job_queue')
 @mock(_scheduler, '_util', name='util')
 @mock(_scheduler, '_waiting', name='waiting')
+def test_scheduler_undelay_jobs_empty(locks, job_queue, util, waiting):
+    """ Scheduler._undelay_jobs deals with no delays """
+    util.DelayedJob = 'DELAYEDJOB'
+    job_queue.JobQueue().__nonzero__.side_effect = [False]
+    job_queue.JobQueue.reset_mock()
+    undelayed = []
+
+    class Scheduler(_scheduler.Scheduler):
+        pass
+
+    scheduler = Scheduler('FINI')
+
+    scheduler._undelay_jobs()
+
+    assert_equals(undelayed, [])
+    assert_equals(map(tuple, locks.mock_calls), [
+        ('Locks', (scheduler,), {}),
+    ])
+    assert_equals(map(tuple, job_queue.mock_calls), [
+        ('JobQueue', (), {}),
+        ('JobQueue', ('DELAYEDJOB',), {}),
+        ('JobQueue().__nonzero__', (), {}),
+    ])
+    assert_equals(map(tuple, waiting.mock_calls), [
+        ('Waiting', (scheduler,), {}),
+    ])
+
+
+@mock(_scheduler, '_locks', name='locks')
+@mock(_scheduler, '_job_queue', name='job_queue')
+@mock(_scheduler, '_util', name='util')
+@mock(_scheduler, '_waiting', name='waiting')
 def test_scheduler_unwait_jobs(locks, job_queue, util, waiting):
     """ Scheduler._unwait_jobs schedules freed jobs in proper order """
     util.DelayedJob = 'DELAYEDJOB'

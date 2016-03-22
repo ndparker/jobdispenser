@@ -135,7 +135,7 @@ def test_locks_release():
 
     job = Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
     job2 = Bunch(id=25, locks=(_lock('foo'),))
-    job3 = Bunch(id=26, locks=(_lock('bar'),))
+    job3 = Bunch(id=26, locks=(_lock('bar'), _lock('zonk')))
     scheduler.jobs = {24: job, 25: job2, 26: job3}
 
     locks = _locks.Locks(scheduler)
@@ -148,7 +148,11 @@ def test_locks_release():
     assert_equals(job2.locks_waiting, 0)
     assert_equals(job3.locks_waiting, 0)
     assert_equals(locks._waiting, {})
-    assert_equals(locks._free, {'foo': set([24, 25]), 'bar': set([24, 26])})
+    assert_equals(locks._free, {
+        'foo': set([24, 25]),
+        'bar': set([24, 26]),
+        'zonk': set([26]),
+    })
     assert_equals(locks._acquired, {'baz': 3})
 
     assert_true(locks.acquire(job2))
@@ -159,7 +163,12 @@ def test_locks_release():
     assert_equals(job3.locks_waiting, 0)
     assert_equals(locks._waiting, {'foo': set([24]), 'bar': set([24])})
     assert_equals(locks._free, {})
-    assert_equals(locks._acquired, {'baz': 3, 'foo': 25, 'bar': 26})
+    assert_equals(locks._acquired, {
+        'baz': 3,
+        'foo': 25,
+        'bar': 26,
+        'zonk': 26,
+    })
 
     assert_equals(locks.release(job2), [])
 
@@ -168,7 +177,7 @@ def test_locks_release():
     assert_equals(job3.locks_waiting, 0)
     assert_equals(locks._waiting, {'bar': set([24])})
     assert_equals(locks._free, {'foo': set([24])})
-    assert_equals(locks._acquired, {'baz': 3, 'bar': 26})
+    assert_equals(locks._acquired, {'baz': 3, 'bar': 26, 'zonk': 26})
 
     assert_equals(locks.release(job3), [job])
 
