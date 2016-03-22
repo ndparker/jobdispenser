@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,8 +25,6 @@ u"""
 
 Tests for wolfe.scheduler._scheduler.
 """
-from __future__ import absolute_import, with_statement
-
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
 
@@ -46,6 +44,7 @@ from wolfe.scheduler import _scheduler
 # pylint: disable = protected-access
 # pylint: disable = missing-docstring
 # pylint: disable = no-member
+# pylint: disable = no-self-use
 
 
 @mock(_scheduler, '_locks', name='locks')
@@ -214,12 +213,10 @@ def test_scheduler_enter_todo_cycle(job):
 
     scheduler = Scheduler("FINI")
 
-    try:
+    with assert_raises(_scheduler.DependencyCycle) as e:
         scheduler.enter_todo('t0d0')
-    except _scheduler.DependencyCycle, e:
-        assert_equals(e.args, (['a', 'b'],))
-    else:
-        assert_false("DependencyCycle not raised")
+    assert_equals(e.exception.args, (['a', 'b'],))
+
     assert_equals(map(_op.attrgetter('id', 'todo'), entered), [])
 
 
