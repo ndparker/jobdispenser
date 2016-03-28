@@ -68,6 +68,7 @@ class Target(make.Target):
             'docs': 'docs',
             'tests': 'tests',
             'coverage': 'docs/coverage',
+            'tox': '.tox',
             'apidoc': 'docs/apidoc',
             'userdoc': 'docs/userdoc',
             'userdoc_source': 'docs/_userdoc',
@@ -134,6 +135,7 @@ class NoseTest(Target):
     def clean(self, scm, dist):
         term.green("Removing coverage files...")
         shell.rm_rf(self.dirs['coverage'])
+        shell.rm_rf(self.dirs['tox'])
         shell.rm('.coverage')
 
 
