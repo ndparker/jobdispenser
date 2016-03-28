@@ -82,18 +82,22 @@ def rm(dest):
         if _errno.ENOENT != e.errno:
             raise
 
+
 def rm_rf(dest):
     """ Remove a tree """
     dest = native(dest)
     if _os.path.exists(dest):
         for path in files(dest, '*'):
-            _os.chmod(native(path), 0644)
+            if not _os.path.islink(native(path)):
+                _os.chmod(native(path), 0644)
         _shutil.rmtree(dest)
 
 
 try:
     mkstemp = _tempfile.mkstemp
 except AttributeError:
+    # pylint: disable = invalid-name
+
     # helpers stolen from 2.4 tempfile module
     try:
         import fcntl as _fcntl
@@ -133,7 +137,7 @@ except AttributeError:
             flags = _bin_openflags
         count = 100
         while count > 0:
-            j = _tempfile._counter.get_next() # pylint: disable = E1101, W0212
+            j = _tempfile._counter.get_next()  # pylint: disable = E1101, W0212
             fname = _os.path.join(dir, prefix + str(j) + suffix)
             try:
                 fd = _os.open(fname, flags, 0600)
