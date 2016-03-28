@@ -30,5 +30,5 @@ __docformat__ = "restructuredtext en"
 __license__ = "Apache License, Version 2.0"
 
 # enable to disable integration tests:
-if 0:  # pylint: disable = using-constant-test
+if 1:  # pylint: disable = using-constant-test
     __path__ = []
