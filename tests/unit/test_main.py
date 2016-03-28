@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,25 +25,22 @@ u"""
 
 Tests for wolfe._main.
 """
-from __future__ import absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
-
-from nose.tools import (
-    assert_equals, assert_false,
-)
-from .._util import mock, Bunch
+from nose.tools import assert_equals, assert_raises
+from .. import _util as _test
 
 from wolfe import _main
-
 
 # pylint: disable = protected-access
 
 
-@mock(_main, '_junk_yard', name='junk_yard')
-@mock(_main, '_scheduler', name='scheduler')
+@_test.patch(_main, '_junk_yard', name='junk_yard')
+@_test.patch(_main, '_scheduler', name='scheduler')
 def test_init(junk_yard, scheduler):
     """ Main properly initializes the scheduler """
     junk_yard.JunkYard = lambda: 'blah'
@@ -54,8 +51,8 @@ def test_init(junk_yard, scheduler):
     assert_equals(result, "blub('blah')")
 
 
-@mock(_main, '_junk_yard')
-@mock(_main, '_scheduler')
+@_test.patch(_main, '_junk_yard')
+@_test.patch(_main, '_scheduler')
 def test_enter_todo():
     """ Main passes todos to the scheduler """
     main = _main.Main()
@@ -64,13 +61,15 @@ def test_enter_todo():
     result = main.enter_todo('zonk')
 
     assert_equals(result, 'lala')
+
+    # pylint: disable = no-member
     assert_equals(map(tuple, main._scheduler.enter_todo.mock_calls), [
         ('', ('zonk',), {})
     ])
 
 
-@mock(_main, '_junk_yard')
-@mock(_main, '_scheduler')
+@_test.patch(_main, '_junk_yard')
+@_test.patch(_main, '_scheduler')
 def test_request_job():
     """ Main requests jobs from the scheduler """
     main = _main.Main()
@@ -81,54 +80,51 @@ def test_request_job():
     assert_equals(result, "R('HUH')")
 
 
-@mock(_main, '_junk_yard')
-@mock(_main, '_scheduler')
-@mock(_main, '_time', name='time')
+@_test.patch(_main, '_junk_yard')
+@_test.patch(_main, '_scheduler')
+@_test.patch(_main, '_time', name='time')
 def test_finish_job(time):
     """ Main.finish_job passes jobs to the scheduler """
     main = _main.Main()
 
     time.time.side_effect = [123]
     main._scheduler.execution_attempt.side_effect = \
-        {23: Bunch(executor='ex1')}.get
+        {23: _test.Bunch(executor='ex1')}.get
     main.finish_job('ex1', 23, 'result')
 
+    # pylint: disable = no-member
     assert_equals(map(tuple, main._scheduler.finish_job.mock_calls), [
         ('', (23, 123, 'result'), {}),
     ])
 
 
-@mock(_main, '_junk_yard')
-@mock(_main, '_scheduler')
-@mock(_main, '_time', name='time')
+@_test.patch(_main, '_junk_yard')
+@_test.patch(_main, '_scheduler')
+@_test.patch(_main, '_time', name='time')
 def test_finish_job_1(time):
     """ Main.finish_job checks executor """
     main = _main.Main()
 
     time.time.side_effect = [123]
     main._scheduler.execution_attempt.side_effect = \
-        {23: Bunch(executor='ex2')}.get
-    try:
+        {23: _test.Bunch(executor='ex2')}.get
+
+    with assert_raises(_main.InvalidExecutorError) as e:
         main.finish_job('ex1', 23, 'result')
-    except _main.InvalidExecutorError, e:
-        assert_equals(e.args, (23, 'ex1'))
-    else:
-        assert_false("Exception is not raised")
+    assert_equals(e.exception.args, (23, 'ex1'))
 
 
-@mock(_main, '_junk_yard')
-@mock(_main, '_scheduler')
-@mock(_main, '_time', name='time')
+@_test.patch(_main, '_junk_yard')
+@_test.patch(_main, '_scheduler')
+@_test.patch(_main, '_time', name='time')
 def test_finish_job_2(time):
     """ Main.finish_job checks if job exists """
     main = _main.Main()
 
     time.time.side_effect = [123]
     main._scheduler.execution_attempt.side_effect = \
-        {24: Bunch(executor='ex2')}.get
-    try:
+        {24: _test.Bunch(executor='ex2')}.get
+
+    with assert_raises(_main.JobNotFoundError) as e:
         main.finish_job('ex1', 23, 'result')
-    except _main.JobNotFoundError, e:
-        assert_equals(e.args, (23,))
-    else:
-        assert_false("Exception is not raised")
+    assert_equals(e.exception.args, (23,))

@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,21 +25,18 @@ u"""
 
 Tests for wolfe.scheduler._util.
 """
-from __future__ import absolute_import, with_statement
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import datetime as _dt
 
-import mock as _mock
-from nose.tools import (
-    assert_equals, assert_raises, assert_true
-)
-from ..._util import mocked
+from nose.tools import assert_equals, assert_raises, assert_true
+from ... import _util as _test
 
 from wolfe.scheduler import _util
-
 
 # pylint: disable = missing-docstring
 # pylint: disable = invalid-name
@@ -56,9 +53,9 @@ def test_scheduled_time():
         def utcoffset(self, dt):
             return _dt.timedelta(0)
 
-    _util._time = _mock.Mock()
+    _util._time = _test.mock.Mock()
     _util._time.time.side_effect = iter([20, 21, 22, 23, 24, 25])
-    _util._dt = _mock.Mock()
+    _util._dt = _test.mock.Mock()
     _util._dt.datetime.utcnow.return_value = _dt.datetime(2006, 12, 6, 16, 30)
     _util._pytz = None
 
@@ -79,7 +76,7 @@ def test_scheduled_time():
 
     def localize(dto):
         return (dto - _dt.timedelta(hours=1)).replace(tzinfo=tzinfo())
-    _util._pytz = _mock.Mock()
+    _util._pytz = _test.mock.Mock()
     _util._pytz.UTC.localize.side_effect = localize
 
     assert_equals(
@@ -109,7 +106,7 @@ def test_delayed_job():
         def __init__(self, not_before):
             self.not_before = not_before
 
-    with mocked(_util, 'scheduled_time') as mock:
+    with _test.patched(_util, 'scheduled_time') as mock:
         mock.side_effect = lambda x: x.not_before
 
         queued1 = _util.DelayedJob(Job(10))

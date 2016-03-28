@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,19 +25,16 @@ u"""
 
 Tests for wolfe.interfaces.
 """
-from __future__ import absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
-
-from nose.tools import (
-    assert_true, assert_false
-)
-from .._util import Bunch
+from nose.tools import assert_true, assert_false
+from .. import _util as _test
 
 from wolfe import interfaces as _interfaces
-
 
 # pylint: disable = missing-docstring
 # pylint: disable = old-style-class
@@ -67,58 +64,58 @@ class IF5:
 
 def test_implements_no_interface():
     """ interfaces.implements handles non-implementing objects """
-    assert_false(_interfaces.implements(Bunch(), 'lalal'))
+    assert_false(_interfaces.implements(_test.Bunch(), 'lalal'))
 
 
 def test_implements_no_interface_2():
     """ interfaces.implements handles empty interface list  """
-    assert_false(_interfaces.implements(Bunch()))
+    assert_false(_interfaces.implements(_test.Bunch()))
 
 
 def test_implements_all_ok():
     """ interfaces.implements finds all interfaces """
-    assert_true(_interfaces.implements(Bunch(__implements__=[
+    assert_true(_interfaces.implements(_test.Bunch(__implements__=[
         IF1, IF2
     ]), IF1, IF2))
 
 
 def test_implements_sub_ok():
     """ interfaces.implements finds subclassed interfaces """
-    assert_true(_interfaces.implements(Bunch(__implements__=[
+    assert_true(_interfaces.implements(_test.Bunch(__implements__=[
         IF1, IF4
     ]), IF1, IF2))
 
 
 def test_implements_sub_nok():
     """ interfaces.implements rejects super interfaces """
-    assert_false(_interfaces.implements(Bunch(__implements__=[
+    assert_false(_interfaces.implements(_test.Bunch(__implements__=[
         IF1, IF2
     ]), IF1, IF4))
 
 
 def test_implements_missing_fail():
     """ interfaces.implements rejects missing interfaces """
-    assert_false(_interfaces.implements(Bunch(__implements__=[
+    assert_false(_interfaces.implements(_test.Bunch(__implements__=[
         IF1, IF4
     ]), IF1, IF2, IF3))
 
 
 def test_implements_extra_ok():
     """ interfaces.implements accepts extra interfaces """
-    assert_true(_interfaces.implements(Bunch(__implements__=[
+    assert_true(_interfaces.implements(_test.Bunch(__implements__=[
         IF1, IF4, IF3
     ]), IF1, IF2))
 
 
 def test_implements_accept_oldstyle():
     """ interfaces.implements accepts old-style interface classes """
-    assert_true(_interfaces.implements(Bunch(__implements__=[
+    assert_true(_interfaces.implements(_test.Bunch(__implements__=[
         IF1, IF5
     ]), IF5))
 
 
 def test_implements_reject_nonclasses():
     """ interfaces.implements rejects non-class interfaces """
-    assert_false(_interfaces.implements(Bunch(__implements__=[
+    assert_false(_interfaces.implements(_test.Bunch(__implements__=[
         1, IF1
     ]), 1))

@@ -1,5 +1,5 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
  Copyright 2014 - 2016
@@ -25,12 +25,14 @@ u"""
 
 Tests for wolfe._version
 """
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
-from nose.tools import (
-    assert_equals, assert_true, assert_false
-)
+from nose.tools import assert_equals, assert_true, assert_false
+from .. import _util as _test
 
 from wolfe import _version
 
@@ -73,36 +75,46 @@ def test_attributes():
 def test_empty():
     """ Version deals with empty version string """
     ver = _version.Version("", True, 5)
-    assert_equals(str(ver), "-dev-r5")
+    assert_equals(str(ver), ".dev5")
     assert_equals(tuple(ver), (0, 0, 0))
 
 
 def test_string():
     """ Version produces reasonable string """
+    try:
+        str_ = bytes
+    except NameError:
+        str_ = str
+
     ver = _version.Version("1.2.3.4.foo", True, 5)
-    assert_equals(str(ver), "1.2.3.4.foo-dev-r5")
+    assert_equals(str_(ver), _test.byte(r"1.2.3.4.foo.dev5"))
 
     ver = _version.Version("1.2.3.4.foo", False, 5)
-    assert_equals(str(ver), "1.2.3.4.foo")
+    assert_equals(str_(ver), _test.byte(r"1.2.3.4.foo"))
 
     ver = _version.Version("1.2.3.4.foo\xe9", False, 5)
-    assert_equals(str(ver), "1.2.3.4.foo\xe9")
+    assert_equals(str_(ver), _test.byte(r"1.2.3.4.foo\xe9"))
 
 
 def test_unicode():
     """ Version accepts and produces reasonable unicode """
+    try:
+        unicode_ = unicode
+    except NameError:
+        unicode_ = str  # pylint: disable = redefined-builtin
+
     ver = _version.Version("1.2.3.4.foo", True, 5)
-    assert_equals(unicode(ver), u"1.2.3.4.foo-dev-r5")
+    assert_equals(unicode_(ver), _test.uni(r"1.2.3.4.foo.dev5"))
 
-    ver = _version.Version(u"1.2.3.4.\xe9", True, 5)
-    assert_equals(unicode(ver), u"1.2.3.4.\xe9-dev-r5")
+    ver = _version.Version(_test.uni(r"1.2.3.4.\xe9"), True, 5)
+    assert_equals(unicode_(ver), _test.uni(r"1.2.3.4.\xe9.dev5"))
 
-    ver = _version.Version(u"1.2.3.4.\xe9", False, 5)
-    assert_equals(unicode(ver), u"1.2.3.4.\xe9")
+    ver = _version.Version(_test.uni(r"1.2.3.4.\xe9"), False, 5)
+    assert_equals(unicode_(ver), _test.uni(r"1.2.3.4.\xe9"))
 
     # utf-8 is detected
     ver = _version.Version("1.2.3.4.\xc3\xa9", False, 5)
-    assert_equals(unicode(ver), u"1.2.3.4.\xe9")
+    assert_equals(unicode_(ver), _test.uni(r"1.2.3.4.\xe9"))
 
 
 def test_repr():
@@ -122,5 +134,6 @@ def test_repr():
     ver = _version.Version("1.2.3.4.foo\xe9", True, 5)
     assert_equals(
         repr(ver),
-        "wolfe._version.Version('1.2.3.4.foo\\xe9', is_dev=True, revision=5)"
+        "wolfe._version.Version('1.2.3.4.foo\\xe9', is_dev=True, "
+        "revision=5)"
     )

@@ -1,5 +1,5 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
  Copyright 2013 - 2016
@@ -25,7 +25,10 @@ u"""
 
 Dependency Graph Resolver.
 """
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import collections as _collections

@@ -1,5 +1,5 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
  Copyright 2014 - 2016
@@ -25,10 +25,12 @@ u"""
 
 Wolfe Integration Tests.
 """
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
-__license__ = "Apache License, Version 2.0"
 
 # enable to disable integration tests:
-if 1:  # pylint: disable = using-constant-test
+if 0:  # pylint: disable = using-constant-test
     __path__ = []

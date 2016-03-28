@@ -36,8 +36,11 @@ source_suffix = '.txt'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Wolfe'
-copyright = u'2014 - 2016 Andr\xe9 Malo'
+project = 'Wolfe'.decode('ascii')
+copyright = (
+    r'2014 - 2016 Andr\xe9 Malo'
+    .encode('ascii').decode('unicode_escape')
+)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

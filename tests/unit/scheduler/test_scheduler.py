@@ -1,5 +1,5 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
  Copyright 2014 - 2016
@@ -25,21 +25,19 @@ u"""
 
 Tests for wolfe.scheduler._scheduler.
 """
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import itertools as _it
 import operator as _op
 
-from nose.tools import (
-    assert_equals, assert_false, assert_true, assert_raises
-)
-import mock as _mock
-
-from ..._util import mock, Bunch
+from nose.tools import assert_equals, assert_false, assert_true, assert_raises
+from ... import _util as _test
 
 from wolfe.scheduler import _scheduler
-
 
 # pylint: disable = protected-access
 # pylint: disable = missing-docstring
@@ -47,10 +45,10 @@ from wolfe.scheduler import _scheduler
 # pylint: disable = no-self-use
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_init(locks, job_queue, util, waiting):
     """ Scheduler properly initializes """
     util.DelayedJob = 'DELAYEDJOB'
@@ -73,11 +71,11 @@ def test_scheduler_init(locks, job_queue, util, waiting):
     })
 
 
-@mock(_scheduler, '_locks')
-@mock(_scheduler, '_job_queue')
-@mock(_scheduler, '_util')
-@mock(_scheduler, '_waiting')
-@mock(_scheduler, '_job', name='job')
+@_test.patch(_scheduler, '_locks')
+@_test.patch(_scheduler, '_job_queue')
+@_test.patch(_scheduler, '_util')
+@_test.patch(_scheduler, '_waiting')
+@_test.patch(_scheduler, '_job', name='job')
 def test_scheduler_is_done(job):
     """ Scheduler.is_done returns correct info """
     job.last_job_id.side_effect = [0, 5, 5, 10, 15]
@@ -92,10 +90,10 @@ def test_scheduler_is_done(job):
     assert_false(scheduler.is_done(16))
 
 
-@mock(_scheduler, '_locks')
-@mock(_scheduler, '_job_queue')
-@mock(_scheduler, '_util')
-@mock(_scheduler, '_waiting')
+@_test.patch(_scheduler, '_locks')
+@_test.patch(_scheduler, '_job_queue')
+@_test.patch(_scheduler, '_util')
+@_test.patch(_scheduler, '_waiting')
 def test_scheduler_execution_attempt():
     """ Scheduler.execution_attempt returns attempt or None """
     scheduler = _scheduler.Scheduler("FINI")
@@ -106,11 +104,11 @@ def test_scheduler_execution_attempt():
     assert_equals(scheduler.execution_attempt(8), 'EIGHT')
 
 
-@mock(_scheduler, '_locks')
-@mock(_scheduler, '_job_queue')
-@mock(_scheduler, '_util')
-@mock(_scheduler, '_waiting')
-@mock(_scheduler, '_group', name='group')
+@_test.patch(_scheduler, '_locks')
+@_test.patch(_scheduler, '_job_queue')
+@_test.patch(_scheduler, '_util')
+@_test.patch(_scheduler, '_waiting')
+@_test.patch(_scheduler, '_group', name='group')
 def test_scheduler_get_group(group):
     """ Scheduler.get_group creates a new group or returns an existing """
     group.Group.side_effect = lambda x, y, z: ['GROUP', x, y, z]
@@ -140,10 +138,10 @@ def test_scheduler_get_group(group):
     ])
 
 
-@mock(_scheduler, '_locks')
-@mock(_scheduler, '_job_queue')
-@mock(_scheduler, '_util')
-@mock(_scheduler, '_waiting')
+@_test.patch(_scheduler, '_locks')
+@_test.patch(_scheduler, '_job_queue')
+@_test.patch(_scheduler, '_util')
+@_test.patch(_scheduler, '_waiting')
 def test_scheduler_del_group():
     """ Scheduler.del_group works as documented """
     scheduler = _scheduler.Scheduler("FINI")
@@ -167,11 +165,11 @@ def test_scheduler_del_group():
     assert_equals(scheduler._groups, {'y': [1]})
 
 
-@mock(_scheduler, '_locks')
-@mock(_scheduler, '_job_queue')
-@mock(_scheduler, '_util')
-@mock(_scheduler, '_waiting')
-@mock(_scheduler, '_job', name='job')
+@_test.patch(_scheduler, '_locks')
+@_test.patch(_scheduler, '_job_queue')
+@_test.patch(_scheduler, '_util')
+@_test.patch(_scheduler, '_waiting')
+@_test.patch(_scheduler, '_job', name='job')
 def test_scheduler_enter_todo(job):
     """ Scheduler.enter_todo unrolls todo graph and turns todos into jobs """
     entered = []
@@ -183,7 +181,7 @@ def test_scheduler_enter_todo(job):
     ids = _it.count(2).next
 
     job.joblist_from_todo.side_effect = lambda x: [
-        Bunch(id=ids(), todo=x) for _ in xrange(2)
+        _test.Bunch(id=ids(), todo=x) for _ in xrange(2)
     ]
 
     scheduler = Scheduler("FINI")
@@ -194,11 +192,11 @@ def test_scheduler_enter_todo(job):
     ])
 
 
-@mock(_scheduler, '_locks')
-@mock(_scheduler, '_job_queue')
-@mock(_scheduler, '_util')
-@mock(_scheduler, '_waiting')
-@mock(_scheduler, '_job', name='job')
+@_test.patch(_scheduler, '_locks')
+@_test.patch(_scheduler, '_job_queue')
+@_test.patch(_scheduler, '_util')
+@_test.patch(_scheduler, '_waiting')
+@_test.patch(_scheduler, '_job', name='job')
 def test_scheduler_enter_todo_cycle(job):
     """ Scheduler.enter_todo raises DependencyCycle """
     entered = []
@@ -220,10 +218,10 @@ def test_scheduler_enter_todo_cycle(job):
     assert_equals(map(_op.attrgetter('id', 'todo'), entered), [])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_enter_job_timed(locks, job_queue, util, waiting):
     """ Scheduler._enter_job delays the job """
     util.DelayedJob = 'DELAYEDJOB'
@@ -233,7 +231,7 @@ def test_scheduler_enter_job_timed(locks, job_queue, util, waiting):
         def _enter_undelayed(self, job):
             undelayed.append(job)
 
-    job = Bunch(id=25, not_before=2)
+    job = _test.Bunch(id=25, not_before=2)
     scheduler = Scheduler('FINI')
     scheduler._enter_job(job)
 
@@ -251,10 +249,10 @@ def test_scheduler_enter_job_timed(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_enter_job_undelayed(locks, job_queue, util, waiting):
     """ Scheduler._enter_job passes job to next state """
     util.DelayedJob = 'DELAYEDJOB'
@@ -264,7 +262,7 @@ def test_scheduler_enter_job_undelayed(locks, job_queue, util, waiting):
         def _enter_undelayed(self, job):
             undelayed.append(job)
 
-    job = Bunch(id=25, not_before=0)
+    job = _test.Bunch(id=25, not_before=0)
     scheduler = Scheduler('FINI')
 
     scheduler._enter_job(job)
@@ -282,10 +280,10 @@ def test_scheduler_enter_job_undelayed(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_enter_undelayed(locks, job_queue, util, waiting):
     """ Scheduler._enter_undelayed waits for other jobs """
     util.DelayedJob = 'DELAYEDJOB'
@@ -295,7 +293,7 @@ def test_scheduler_enter_undelayed(locks, job_queue, util, waiting):
         def _schedule_independent(self, job):
             independent.append(job)
 
-    job = Bunch(id=25, not_before=0)
+    job = _test.Bunch(id=25, not_before=0)
     scheduler = Scheduler('FINI')
     scheduler._waiting.put.side_effect = [True]
 
@@ -314,10 +312,10 @@ def test_scheduler_enter_undelayed(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_enter_undelayed_schedule(locks, job_queue, util, waiting):
     """ Scheduler._enter_undelayed schedules a free job """
     util.DelayedJob = 'DELAYEDJOB'
@@ -327,7 +325,7 @@ def test_scheduler_enter_undelayed_schedule(locks, job_queue, util, waiting):
         def _schedule_independent(self, job):
             independent.append(job)
 
-    job = Bunch(id=25, not_before=0)
+    job = _test.Bunch(id=25, not_before=0)
     scheduler = Scheduler('FINI')
     scheduler._waiting.put.side_effect = [False]
 
@@ -346,10 +344,10 @@ def test_scheduler_enter_undelayed_schedule(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_schedule_independent(locks, job_queue, util, waiting):
     """ Scheduler._schedule_independent enqueues the job """
     util.DelayedJob = 'DELAYEDJOB'
@@ -366,7 +364,7 @@ def test_scheduler_schedule_independent(locks, job_queue, util, waiting):
         def get_group(self, name):
             return Group(name)
 
-    job = Bunch(id=25, not_before=0, group='lala')
+    job = _test.Bunch(id=25, not_before=0, group='lala')
     scheduler = Scheduler('FINI')
 
     scheduler._schedule_independent(job)
@@ -384,11 +382,11 @@ def test_scheduler_schedule_independent(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
-@mock(_scheduler, '_time', name='time')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_time', name='time')
 def test_scheduler_undelay_jobs_future(locks, job_queue, util, waiting, time):
     """ Scheduler._undelay_jobs ignores future jobs """
     util.DelayedJob = 'DELAYEDJOB'
@@ -399,7 +397,7 @@ def test_scheduler_undelay_jobs_future(locks, job_queue, util, waiting, time):
 
     time.time.side_effect = [10.2]
     scheduler = Scheduler('FINI')
-    scheduler._delayed.peek.side_effect = [Bunch(not_before=11)]
+    scheduler._delayed.peek.side_effect = [_test.Bunch(not_before=11)]
 
     scheduler._undelay_jobs()
 
@@ -417,11 +415,11 @@ def test_scheduler_undelay_jobs_future(locks, job_queue, util, waiting, time):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
-@mock(_scheduler, '_time', name='time')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_time', name='time')
 def test_scheduler_undelay_jobs_past(locks, job_queue, util, waiting, time):
     """ Scheduler._undelay_jobs enters undelayed jobs """
     util.DelayedJob = 'DELAYEDJOB'
@@ -431,8 +429,8 @@ def test_scheduler_undelay_jobs_past(locks, job_queue, util, waiting, time):
         def _enter_undelayed(self, job):
             undelayed.append(job)
 
-    job1 = Bunch(not_before=9)
-    job2 = Bunch(not_before=10)
+    job1 = _test.Bunch(not_before=9)
+    job2 = _test.Bunch(not_before=10)
 
     time.time.side_effect = [10.2]
     scheduler = Scheduler('FINI')
@@ -462,11 +460,11 @@ def test_scheduler_undelay_jobs_past(locks, job_queue, util, waiting, time):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
-@mock(_scheduler, '_time', name='time')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_time', name='time')
 def test_scheduler_undelay_jobs_both(locks, job_queue, util, waiting, time):
     """ Scheduler._undelay_jobs enters undelayed jobs and keeps futures """
     util.DelayedJob = 'DELAYEDJOB'
@@ -476,9 +474,9 @@ def test_scheduler_undelay_jobs_both(locks, job_queue, util, waiting, time):
         def _enter_undelayed(self, job):
             undelayed.append(job)
 
-    job1 = Bunch(not_before=9)
-    job2 = Bunch(not_before=10)
-    job3 = Bunch(not_before=11)
+    job1 = _test.Bunch(not_before=9)
+    job2 = _test.Bunch(not_before=10)
+    job3 = _test.Bunch(not_before=11)
 
     time.time.side_effect = [10.2]
     scheduler = Scheduler('FINI')
@@ -508,10 +506,10 @@ def test_scheduler_undelay_jobs_both(locks, job_queue, util, waiting, time):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_undelay_jobs_empty(locks, job_queue, util, waiting):
     """ Scheduler._undelay_jobs deals with no delays """
     util.DelayedJob = 'DELAYEDJOB'
@@ -540,10 +538,10 @@ def test_scheduler_undelay_jobs_empty(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_unwait_jobs(locks, job_queue, util, waiting):
     """ Scheduler._unwait_jobs schedules freed jobs in proper order """
     util.DelayedJob = 'DELAYEDJOB'
@@ -557,9 +555,9 @@ def test_scheduler_unwait_jobs(locks, job_queue, util, waiting):
         def _schedule_independent(self, job):
             independent.append(job)
 
-    job1 = Bunch(id=12)
-    job2 = Bunch(id=13)
-    job3 = Bunch(id=14)
+    job1 = _test.Bunch(id=12)
+    job2 = _test.Bunch(id=13)
+    job3 = _test.Bunch(id=14)
 
     scheduler = Scheduler('FINI')
     scheduler._waiting.free.side_effect = [[job3, job1, job2]]
@@ -586,10 +584,10 @@ def test_scheduler_unwait_jobs(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_request_job(locks, job_queue, util, waiting):
     """ Scheduler.request_job returns the correct job """
     util.DelayedJob = 'DELAYEDJOB'
@@ -599,23 +597,23 @@ def test_scheduler_request_job(locks, job_queue, util, waiting):
         def _undelay_jobs(self):
             undelayed.append(1)
 
-    class Job(Bunch):
+    class Job(_test.Bunch):
         def __lt__(self, other):
             return self.order < other.order or self.job.id < other.job.id
 
-    job1 = Job(order=6, job=Bunch(id=10))
-    job2 = Job(order=5, job=Bunch(id=11))
-    job3 = Job(order=7, job=Bunch(id=12))
+    job1 = Job(order=6, job=_test.Bunch(id=10))
+    job2 = Job(order=5, job=_test.Bunch(id=11))
+    job3 = Job(order=7, job=_test.Bunch(id=12))
 
-    group1 = _mock.MagicMock()
+    group1 = _test.mock.MagicMock()
     group1.peek.side_effect = [job1]
     group1.get.side_effect = [job1.job]
 
-    group2 = _mock.MagicMock()
+    group2 = _test.mock.MagicMock()
     group2.peek.side_effect = [job2]
     group2.get.side_effect = [job2.job]
 
-    group3 = _mock.MagicMock()
+    group3 = _test.mock.MagicMock()
     group3.peek.side_effect = [job3]
     group3.get.side_effect = [job3.job]
 
@@ -625,7 +623,7 @@ def test_scheduler_request_job(locks, job_queue, util, waiting):
         group2=group2,
         group3=group3,
     )
-    result = scheduler.request_job(Bunch(
+    result = scheduler.request_job(_test.Bunch(
         groups=['group1', 'group2', 'group3'],
         uid='lala',
         attempt=lambda: 'ATT',
@@ -656,11 +654,11 @@ def test_scheduler_request_job(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
-@mock(_scheduler, '_constants', name='const')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_constants', name='const')
 def test_scheduler_request_job_default(locks, job_queue, util, waiting,
                                        const):
     """ Scheduler.request_job falls back to default group """
@@ -671,23 +669,23 @@ def test_scheduler_request_job_default(locks, job_queue, util, waiting,
         def _undelay_jobs(self):
             undelayed.append(1)
 
-    class Job(Bunch):
+    class Job(_test.Bunch):
         def __lt__(self, other):
             return self.order < other.order or self.job.id < other.job.id
 
-    job1 = Job(order=6, job=Bunch(id=10))
-    job2 = Job(order=5, job=Bunch(id=11))
-    job3 = Job(order=7, job=Bunch(id=12))
+    job1 = Job(order=6, job=_test.Bunch(id=10))
+    job2 = Job(order=5, job=_test.Bunch(id=11))
+    job3 = Job(order=7, job=_test.Bunch(id=12))
 
-    group1 = _mock.MagicMock()
+    group1 = _test.mock.MagicMock()
     group1.peek.side_effect = [job1]
     group1.get.side_effect = [job1.job]
 
-    group2 = _mock.MagicMock()
+    group2 = _test.mock.MagicMock()
     group2.peek.side_effect = [job2]
     group2.get.side_effect = [job2.job]
 
-    group3 = _mock.MagicMock()
+    group3 = _test.mock.MagicMock()
     group3.peek.side_effect = [job3]
     group3.get.side_effect = [job3.job]
 
@@ -699,7 +697,7 @@ def test_scheduler_request_job_default(locks, job_queue, util, waiting,
     )
     const.Group.DEFAULT = 'group1'
     result = scheduler.request_job(
-        Bunch(groups=[], uid='lala', attempt=lambda: 'ATT')
+        _test.Bunch(groups=[], uid='lala', attempt=lambda: 'ATT')
     )
 
     assert_equals(result, job1.job)
@@ -725,10 +723,10 @@ def test_scheduler_request_job_default(locks, job_queue, util, waiting,
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_request_job_again(locks, job_queue, util, waiting):
     """ Scheduler.request_job finds the same job again """
     util.DelayedJob = 'DELAYEDJOB'
@@ -738,28 +736,28 @@ def test_scheduler_request_job_again(locks, job_queue, util, waiting):
         def _undelay_jobs(self):
             undelayed.append(1)
 
-    class Job(Bunch):
+    class Job(_test.Bunch):
         def __lt__(self, other):
             return self.order < other.order or self.job.id < other.job.id
 
-    job1 = Job(order=6, job=Bunch(id=10))
-    job2 = Job(order=5, job=Bunch(id=11))
-    job3 = Job(order=7, job=Bunch(id=12))
+    job1 = Job(order=6, job=_test.Bunch(id=10))
+    job2 = Job(order=5, job=_test.Bunch(id=11))
+    job3 = Job(order=7, job=_test.Bunch(id=12))
 
-    group1 = _mock.MagicMock()
+    group1 = _test.mock.MagicMock()
     group1.peek.side_effect = [job1]
     group1.get.side_effect = [job1.job]
 
-    group2 = _mock.MagicMock()
+    group2 = _test.mock.MagicMock()
     group2.peek.side_effect = [job2]
     group2.get.side_effect = [job2.job]
 
-    group3 = _mock.MagicMock()
+    group3 = _test.mock.MagicMock()
     group3.peek.side_effect = [job3]
     group3.get.side_effect = [job3.job]
 
-    attempt = Bunch(executor='lala', which=1)
-    attempt2 = Bunch(executor='lala', which=2)
+    attempt = _test.Bunch(executor='lala', which=1)
+    attempt2 = _test.Bunch(executor='lala', which=2)
 
     scheduler = Scheduler('FINI')
     scheduler.jobs.update({
@@ -773,10 +771,10 @@ def test_scheduler_request_job_again(locks, job_queue, util, waiting):
         group3=group3,
     )
     result = scheduler.request_job(
-        Bunch(groups=['group2'], uid='lala', attempt=lambda: attempt)
+        _test.Bunch(groups=['group2'], uid='lala', attempt=lambda: attempt)
     )
     result2 = scheduler.request_job(
-        Bunch(groups=['group2'], uid='lala', attempt=lambda: attempt2)
+        _test.Bunch(groups=['group2'], uid='lala', attempt=lambda: attempt2)
     )
 
     assert_true(result is result2)
@@ -803,10 +801,10 @@ def test_scheduler_request_job_again(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_request_job_none_1(locks, job_queue, util, waiting):
     """ Scheduler.request_job returns None for unknown groups """
     util.DelayedJob = 'DELAYEDJOB'
@@ -816,23 +814,23 @@ def test_scheduler_request_job_none_1(locks, job_queue, util, waiting):
         def _undelay_jobs(self):
             undelayed.append(1)
 
-    class Job(Bunch):
+    class Job(_test.Bunch):
         def __lt__(self, other):
             return self.order < other.order or self.job.id < other.job.id
 
-    job1 = Job(order=6, job=Bunch(id=10))
-    job2 = Job(order=5, job=Bunch(id=11))
-    job3 = Job(order=7, job=Bunch(id=12))
+    job1 = Job(order=6, job=_test.Bunch(id=10))
+    job2 = Job(order=5, job=_test.Bunch(id=11))
+    job3 = Job(order=7, job=_test.Bunch(id=12))
 
-    group1 = _mock.MagicMock()
+    group1 = _test.mock.MagicMock()
     group1.peek.side_effect = [job1]
     group1.get.side_effect = [job1.job]
 
-    group2 = _mock.MagicMock()
+    group2 = _test.mock.MagicMock()
     group2.peek.side_effect = [job2]
     group2.get.side_effect = [job2.job]
 
-    group3 = _mock.MagicMock()
+    group3 = _test.mock.MagicMock()
     group3.peek.side_effect = [job3]
     group3.get.side_effect = [job3.job]
 
@@ -843,7 +841,7 @@ def test_scheduler_request_job_none_1(locks, job_queue, util, waiting):
         group3=group3,
     )
     result = scheduler.request_job(
-        Bunch(groups=['group4'], uid='lala', attempt=lambda: 'ATT')
+        _test.Bunch(groups=['group4'], uid='lala', attempt=lambda: 'ATT')
     )
 
     assert_true(result is None)
@@ -867,10 +865,10 @@ def test_scheduler_request_job_none_1(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_request_job_none_2(locks, job_queue, util, waiting):
     """ Scheduler.request_job returns None for empty groups """
     util.DelayedJob = 'DELAYEDJOB'
@@ -880,27 +878,27 @@ def test_scheduler_request_job_none_2(locks, job_queue, util, waiting):
         def _undelay_jobs(self):
             undelayed.append(1)
 
-    class Job(Bunch):
+    class Job(_test.Bunch):
         def __lt__(self, other):
             return self.order < other.order or self.job.id < other.job.id
 
-    job1 = Job(order=6, job=Bunch(id=10))
-    job2 = Job(order=5, job=Bunch(id=11))
-    job3 = Job(order=7, job=Bunch(id=12))
+    job1 = Job(order=6, job=_test.Bunch(id=10))
+    job2 = Job(order=5, job=_test.Bunch(id=11))
+    job3 = Job(order=7, job=_test.Bunch(id=12))
 
-    group1 = _mock.MagicMock()
+    group1 = _test.mock.MagicMock()
     group1.peek.side_effect = [job1]
     group1.get.side_effect = [job1.job]
 
-    group2 = _mock.MagicMock()
+    group2 = _test.mock.MagicMock()
     group2.peek.side_effect = [job2]
     group2.get.side_effect = [job2.job]
 
-    group3 = _mock.MagicMock()
+    group3 = _test.mock.MagicMock()
     group3.peek.side_effect = [job3]
     group3.get.side_effect = [job3.job]
 
-    group4 = _mock.MagicMock()
+    group4 = _test.mock.MagicMock()
     group4.peek.side_effect = lambda: None
     group4.get.side_effect = [IndexError]
 
@@ -912,7 +910,7 @@ def test_scheduler_request_job_none_2(locks, job_queue, util, waiting):
         group4=group4,
     )
     result = scheduler.request_job(
-        Bunch(groups=['group4'], uid='lala', attempt=lambda: 'ATT')
+        _test.Bunch(groups=['group4'], uid='lala', attempt=lambda: 'ATT')
     )
 
     assert_true(result is None)
@@ -939,10 +937,10 @@ def test_scheduler_request_job_none_2(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_finish_job(locks, job_queue, util, waiting):
     """ Scheduler.finish_job schedules finishes successful job """
     util.DelayedJob = 'DELAYEDJOB'
@@ -954,15 +952,15 @@ def test_scheduler_finish_job(locks, job_queue, util, waiting):
         def _unwait_jobs(self, finished_id):
             unwaited.append(finished_id)
 
-    job = Bunch(id=56, attempts=[])
-    job2 = Bunch(id=55)
-    attempt = _mock.MagicMock()
+    job = _test.Bunch(id=56, attempts=[])
+    job2 = _test.Bunch(id=55)
+    attempt = _test.mock.MagicMock()
     attempt.executor = 'lolo'
-    attempt2 = _mock.MagicMock()
+    attempt2 = _test.mock.MagicMock()
     attempt2.executor = 'lala'
-    result = Bunch(failed=False)
+    result = _test.Bunch(failed=False)
 
-    scheduler = Scheduler(Bunch(put=finished.append))
+    scheduler = Scheduler(_test.Bunch(put=finished.append))
     scheduler.jobs[56] = job
     scheduler.jobs[55] = job2
     scheduler._executing[56] = attempt
@@ -1001,10 +999,10 @@ def test_scheduler_finish_job(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_finish_job_failed(locks, job_queue, util, waiting):
     """ Scheduler.finish_job schedules finishes failed job """
     util.DelayedJob = 'DELAYEDJOB'
@@ -1020,15 +1018,15 @@ def test_scheduler_finish_job_failed(locks, job_queue, util, waiting):
         def _fail_job(self, job):
             failed.append(job)
 
-    job = Bunch(id=56, attempts=[])
-    job2 = Bunch(id=55)
-    attempt = _mock.MagicMock()
+    job = _test.Bunch(id=56, attempts=[])
+    job2 = _test.Bunch(id=55)
+    attempt = _test.mock.MagicMock()
     attempt.executor = 'lolo'
-    attempt2 = _mock.MagicMock()
+    attempt2 = _test.mock.MagicMock()
     attempt2.executor = 'lala'
-    result = Bunch(failed=True)
+    result = _test.Bunch(failed=True)
 
-    scheduler = Scheduler(Bunch(put=finished.append))
+    scheduler = Scheduler(_test.Bunch(put=finished.append))
     scheduler.jobs[56] = job
     scheduler.jobs[55] = job2
     scheduler._executing[56] = attempt
@@ -1067,10 +1065,10 @@ def test_scheduler_finish_job_failed(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_finish_job_unlock(locks, job_queue, util, waiting):
     """ Scheduler.finish_job schedules unlocked jobs """
     util.DelayedJob = 'DELAYEDJOB'
@@ -1097,17 +1095,17 @@ def test_scheduler_finish_job_unlock(locks, job_queue, util, waiting):
         def _fail_job(self, job):
             failed.append(job)
 
-    job = Bunch(id=56, attempts=[])
-    job2 = Bunch(id=55)
-    job3 = Bunch(id=57, group='lala')
-    job4 = Bunch(id=58, group='lolo')
-    attempt = _mock.MagicMock()
+    job = _test.Bunch(id=56, attempts=[])
+    job2 = _test.Bunch(id=55)
+    job3 = _test.Bunch(id=57, group='lala')
+    job4 = _test.Bunch(id=58, group='lolo')
+    attempt = _test.mock.MagicMock()
     attempt.executor = 'xxx'
-    attempt2 = _mock.MagicMock()
+    attempt2 = _test.mock.MagicMock()
     attempt2.executor = 'yyy'
-    result = Bunch(failed=True)
+    result = _test.Bunch(failed=True)
 
-    scheduler = Scheduler(Bunch(put=finished.append))
+    scheduler = Scheduler(_test.Bunch(put=finished.append))
     scheduler.jobs[56] = job
     scheduler.jobs[55] = job2
     scheduler._executing[56] = attempt
@@ -1149,15 +1147,15 @@ def test_scheduler_finish_job_unlock(locks, job_queue, util, waiting):
     ])
 
 
-@mock(_scheduler, '_locks', name='locks')
-@mock(_scheduler, '_job_queue', name='job_queue')
-@mock(_scheduler, '_util', name='util')
-@mock(_scheduler, '_waiting', name='waiting')
+@_test.patch(_scheduler, '_locks', name='locks')
+@_test.patch(_scheduler, '_job_queue', name='job_queue')
+@_test.patch(_scheduler, '_util', name='util')
+@_test.patch(_scheduler, '_waiting', name='waiting')
 def test_scheduler_fail_job(locks, job_queue, util, waiting):
     """ Scheduler._fail_job adds job ID to failed set """
     util.DelayedJob = 'DELAYEDJOB'
 
-    job = Bunch(id=23)
+    job = _test.Bunch(id=23)
     scheduler = _scheduler.Scheduler('FINI')
     scheduler.jobs[23] = job
     scheduler._failed.add(12)

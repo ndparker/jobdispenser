@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,20 +25,16 @@ u"""
 
 Tests for wolfe.scheduler._group.
 """
-from __future__ import with_statement, absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
-from nose.tools import (
-    assert_equals, assert_false, assert_true, assert_raises
-)
-import mock as _mock
-
-from ..._util import Bunch, mock
+from nose.tools import assert_equals, assert_false, assert_true, assert_raises
+from ... import _util as _test
 
 from wolfe.scheduler import _group
-
 
 # pylint: disable = protected-access
 # pylint: disable = no-member
@@ -52,8 +48,8 @@ class _Scheduler(object):
     just_me = id(_group)
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util', name='util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util', name='util')
 def test_group_init(job_queue, util):
     """ Group initializes properly """
     scheduler = _Scheduler()
@@ -79,27 +75,27 @@ def test_group_init(job_queue, util):
         group._scheduler.just_me
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util')
 def test_group_schedule_false(job_queue):
     """ Group.schedule return false on locked jobs """
     job_queue.JobQueue.side_effect = lambda x: None
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
     group = _group.Group('foo', 'locks', scheduler)
 
-    assert_false(group.schedule(Bunch(locks_waiting=2)))
+    assert_false(group.schedule(_test.Bunch(locks_waiting=2)))
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util', name='util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util', name='util')
 def test_group_schedule_true(job_queue, util):
     """ Group.schedule return true on scheduled jobs """
-    scheduler = _mock.MagicMock()
-    locks = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
+    locks = _test.mock.MagicMock()
     locks.acquire.side_effect = [True]
     group = _group.Group('foo', locks, scheduler)
 
-    job = Bunch(locks_waiting=0, id=23)
+    job = _test.Bunch(locks_waiting=0, id=23)
     assert_true(group.schedule(job))
 
     assert_equals(map(tuple, job_queue.mock_calls), [
@@ -115,16 +111,16 @@ def test_group_schedule_true(job_queue, util):
     ])
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util', name='util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util', name='util')
 def test_group_schedule_assert(job_queue, util):
     """ Group.schedule raises assertion error on inconsistent jobs """
-    scheduler = _mock.MagicMock()
-    locks = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
+    locks = _test.mock.MagicMock()
     locks.acquire.side_effect = [False]
     group = _group.Group('foo', locks, scheduler)
 
-    job = Bunch(locks_waiting=0, id=23)
+    job = _test.Bunch(locks_waiting=0, id=23)
     with assert_raises(AssertionError):
         group.schedule(job)
 
@@ -140,20 +136,20 @@ def test_group_schedule_assert(job_queue, util):
     ])
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util')
 def test_group_peek_empty(job_queue):
     """ Group.peek returns None if empty """
     queue = []
     job_queue.JobQueue.side_effect = lambda x: queue
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
     group = _group.Group('foo', 'locks', scheduler)
 
     assert_equals(group.peek(), None)
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util')
 def test_group_peek_something(job_queue):
     """ Group.peek returns the tip if not empty """
     class queue(list):
@@ -161,14 +157,14 @@ def test_group_peek_something(job_queue):
             return self[0]
     queue = queue([4])
     job_queue.JobQueue.side_effect = lambda x: queue
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
     group = _group.Group('foo', 'locks', scheduler)
 
     assert_equals(group.peek(), 4)
 
 
-@mock(_group, '_job_queue', name='job_queue')
-@mock(_group, '_util')
+@_test.patch(_group, '_job_queue', name='job_queue')
+@_test.patch(_group, '_util')
 def test_group_get_something(job_queue):
     " Group.get extracts the tip if not empty, raises IndexError otherwise "
     class queue(list):
@@ -176,8 +172,8 @@ def test_group_get_something(job_queue):
             return self.pop(0)
     queue = queue([4, 5])
     job_queue.JobQueue.side_effect = lambda x: queue
-    scheduler = _mock.MagicMock()
-    locks = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
+    locks = _test.mock.MagicMock()
     group = _group.Group('foo', locks, scheduler)
 
     assert_equals(group.get(), 4)

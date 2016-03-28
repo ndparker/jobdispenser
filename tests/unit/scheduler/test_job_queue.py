@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,19 +25,16 @@ u"""
 
 Tests for wolfe.scheduler._job_queue.
 """
-from __future__ import with_statement, absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
-from nose.tools import (
-    assert_equals, assert_false, assert_true, assert_raises
-)
-
-from ..._util import Bunch
+from nose.tools import assert_equals, assert_false, assert_true, assert_raises
+from ... import _util as _test
 
 from wolfe.scheduler import _job_queue
-
 
 # pylint: disable = protected-access
 
@@ -66,7 +63,7 @@ def test_job_queue_one_job():
     """ Job queue deals with one job """
     queue = _job_queue.JobQueue(Wrapper)
 
-    queue.put(Bunch(id=2))
+    queue.put(_test.Bunch(id=2))
     assert_equals(len(queue._queue), 1)
     assert_true(queue)
     assert_equals(len(queue), 1)
@@ -78,8 +75,8 @@ def test_job_queue_more_jobs_peek_get():
     """ Job queue sorts properly """
     queue = _job_queue.JobQueue(Wrapper)
 
-    queue.put(Bunch(id=2))
-    queue.put(Bunch(id=3))
+    queue.put(_test.Bunch(id=2))
+    queue.put(_test.Bunch(id=3))
     assert_equals(len(queue._queue), 2)
     assert_true(queue)
     assert_equals(len(queue), 2)
@@ -88,7 +85,7 @@ def test_job_queue_more_jobs_peek_get():
     assert_true(3 in queue)
     assert_false(4 in queue)
 
-    queue.put(Bunch(id=1))
+    queue.put(_test.Bunch(id=1))
     assert_true(1 in queue)
 
     assert_equals(queue.peek().job.id, 3)
@@ -108,9 +105,9 @@ def test_job_queue_iter():
     """ Job queue provides iterator """
     queue = _job_queue.JobQueue(Wrapper)
 
-    queue.put(Bunch(id=2))
-    queue.put(Bunch(id=3))
-    queue.put(Bunch(id=1))
+    queue.put(_test.Bunch(id=2))
+    queue.put(_test.Bunch(id=3))
+    queue.put(_test.Bunch(id=1))
 
     result = []
     for item in queue:

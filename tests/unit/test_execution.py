@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,19 +25,17 @@ u"""
 
 Tests for wolfe._execution.
 """
-from __future__ import absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (
-    assert_equals, assert_false, assert_true,
-)
-from .._util import mock, Bunch
+from nose.tools import assert_equals, assert_false, assert_true
+from .. import _util as _test
 
 from wolfe import _execution
-
 
 # pylint: disable = no-member
 
@@ -70,31 +68,31 @@ def test_executor_init_4():
     assert_equals(result.groups, ('g1', 'g2'))
 
 
-@mock(_execution, 'Attempt', name='attempt')
+@_test.patch(_execution, 'Attempt', name='attempt')
 def test_executor_attempt(attempt):
     """ Executor.attempt constructs attempt from self """
-    attempt.side_effect = lambda x: Bunch(exe=x)
+    attempt.side_effect = lambda x: _test.Bunch(exe=x)
     exe = _execution.Executor('foo', ['g1', 'g2'])
     result = exe.attempt()
 
     assert_equals(result.exe, exe)
 
 
-@mock(_execution, 'Result', name='result')
+@_test.patch(_execution, 'Result', name='result')
 def test_executor_result(result):
     """ Executor.result constructs result container """
-    result.side_effect = lambda *args: Bunch(args=args)
+    result.side_effect = lambda *args: _test.Bunch(args=args)
     exe = _execution.Executor('foo', ['g1', 'g2'])
     result = exe.result(1, 2, 3)
 
     assert_equals(result.args, (1, 2, 3))
 
 
-@mock(_execution, '_time', name='time')
+@_test.patch(_execution, '_time', name='time')
 def test_attempt_init(time):
     """ Attempt initializes properly """
     time.time.side_effect = [42]
-    att = _execution.Attempt(Bunch(uid='doh'))
+    att = _execution.Attempt(_test.Bunch(uid='doh'))
 
     assert_equals(att.executor, 'doh')
     assert_equals(att.start, 42)
@@ -102,11 +100,11 @@ def test_attempt_init(time):
     assert_equals(att.result, None)
 
 
-@mock(_execution, '_time', name='time')
+@_test.patch(_execution, '_time', name='time')
 def test_attempt_finish(time):
     """ Attempt.finish stores values """
     time.time.side_effect = [42]
-    att = _execution.Attempt(Bunch(uid='doh'))
+    att = _execution.Attempt(_test.Bunch(uid='doh'))
 
     assert_equals(att.executor, 'doh')
     assert_equals(att.start, 42)

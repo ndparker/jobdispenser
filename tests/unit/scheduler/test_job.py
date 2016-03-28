@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,32 +25,31 @@ u"""
 
 Tests for wolfe.scheduler._job.
 """
-from __future__ import absolute_import, with_statement
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import itertools as _it
 import operator as _op
 
-from nose.tools import (
-    assert_equals, assert_raises, assert_false,
-)
-from ..._util import mock, mocked, Bunch
+from nose.tools import assert_equals, assert_raises
+
+from ... import _util as _test
 
 from wolfe.scheduler import _job
-
 
 # pylint: disable = missing-docstring
 
 
 def test_last_job_id():
     """ last_job_id returns the correct numbers """
-    with mocked(_job, '_gen_id', _it.count(1).next):
+    with _test.patched(_job, '_gen_id', _it.count(1).next):
         assert_equals(_job.last_job_id(), 0)
         assert_equals(_job.last_job_id(), 0)
 
-    with mocked(_job, '_gen_id', _it.count(5).next) as gen_id:
+    with _test.patched(_job, '_gen_id', _it.count(5).next) as gen_id:
         assert_equals(_job.last_job_id(), 4)
 
         assert_equals(gen_id(), 5)
@@ -62,7 +61,7 @@ def test_last_job_id():
         assert_equals(_job.last_job_id(), 6)
 
 
-@mock(_job, '_lock', name='lock')
+@_test.patch(_job, '_lock', name='lock')
 def test_job_init(lock):
     """ Job properly initializes """
     lock.validate.side_effect = lambda x: list(x or ())
@@ -84,7 +83,7 @@ def test_job_init(lock):
     })
 
 
-@mock(_job, '_lock')
+@_test.patch(_job, '_lock')
 def test_job_depend_on_error():
     """ Job.depend_on raises ValueError on invalid ID """
     job = _job.Job(3, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1, 2], "ATT")
@@ -97,7 +96,7 @@ def test_job_depend_on_error():
     assert_equals(job.predecessors, set([1, 2]))
 
 
-@mock(_job, '_lock')
+@_test.patch(_job, '_lock')
 def test_job_depend_on_error2():
     """ Job.depend_on raises ValueError on ID outside the range """
     job = _job.Job(4, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1], "ATT")
@@ -112,7 +111,7 @@ def test_job_depend_on_error2():
     assert_equals(job.predecessors, set([1]))
 
 
-@mock(_job, '_lock')
+@_test.patch(_job, '_lock')
 def test_job_depend_on_ok():
     """ Job.depend_on accepts valid IDs and ignores dupes """
     job = _job.Job(4, "DESC", "GROUP", "LK", 3, 10, "EXTRA", [1], "ATT")
@@ -124,15 +123,15 @@ def test_job_depend_on_ok():
     assert_equals(job.predecessors, set([1, 2]))
 
 
-@mock(_job, 'Job', name='job_class')
-@mock(_job, '_gen_id', name='gen_id')
-@mock(_job, '_lock')
+@_test.patch(_job, 'Job', name='job_class')
+@_test.patch(_job, '_gen_id', name='gen_id')
+@_test.patch(_job, '_lock')
 def test_job_from_todo(gen_id, job_class):
     """ job_from_todo properly initializes a job """
     gen_id.side_effect = [23]
     job_class.side_effect = lambda *x, **y: 'DOH'
 
-    todo = Bunch(
+    todo = _test.Bunch(
         desc="lalala", group="baz", locks=["foo", "bar"], importance=18,
         not_before=10
     )
@@ -148,22 +147,22 @@ def test_job_from_todo(gen_id, job_class):
     )])
 
 
-@mock(_job, 'job_from_todo', name='job_factory')
-@mock(_job, '_lock')
+@_test.patch(_job, 'job_from_todo', name='job_factory')
+@_test.patch(_job, '_lock')
 def test_joblist_from_todo_simple(job_factory):
     """ joblist_from_todo works in the trivial case """
     gen = _it.count(20).next
-    job_factory.side_effect = lambda x: Bunch(t=x, id=gen())
+    job_factory.side_effect = lambda x: _test.Bunch(t=x, id=gen())
 
-    todo = Bunch(predecessors=lambda: (), successors=lambda: ())
+    todo = _test.Bunch(predecessors=lambda: (), successors=lambda: ())
 
     jobs = _job.joblist_from_todo(todo)
 
     assert_equals(map(_op.attrgetter('id', 't'), jobs), [(20, todo)])
 
 
-@mock(_job, 'job_from_todo', name='job_factory')
-@mock(_job, '_lock')
+@_test.patch(_job, 'job_from_todo', name='job_factory')
+@_test.patch(_job, '_lock')
 def test_joblist_from_todo_tree(job_factory):
     """ joblist_from_todo works for a simple tree """
     gen = _it.count(20).next
@@ -176,13 +175,13 @@ def test_joblist_from_todo_tree(job_factory):
         def __init__(self):
             self._succ = []
 
-        def predecessors(self):
+        def predecessors(self):  # pylint: disable = no-self-use
             return ()
 
         def successors(self):
             return self._succ
 
-    job_factory.side_effect = lambda x: Bunch(
+    job_factory.side_effect = lambda x: _test.Bunch(
         t=x, id=gen(), depend_on=Depender()
     )
 
@@ -208,8 +207,8 @@ def test_joblist_from_todo_tree(job_factory):
     ])
 
 
-@mock(_job, 'job_from_todo', name='job_factory')
-@mock(_job, '_lock')
+@_test.patch(_job, 'job_from_todo', name='job_factory')
+@_test.patch(_job, '_lock')
 def test_joblist_from_todo_dag(job_factory):
     """ joblist_from_todo works for a complex DAG """
     gen = _it.count(20).next
@@ -229,7 +228,7 @@ def test_joblist_from_todo_dag(job_factory):
         def successors(self):
             return self._succ
 
-    job_factory.side_effect = lambda x: Bunch(
+    job_factory.side_effect = lambda x: _test.Bunch(
         t=x, id=gen(), depend_on=Depender()
     )
 
@@ -257,8 +256,8 @@ def test_joblist_from_todo_dag(job_factory):
     ])
 
 
-@mock(_job, 'job_from_todo', name='job_factory')
-@mock(_job, '_lock')
+@_test.patch(_job, 'job_from_todo', name='job_factory')
+@_test.patch(_job, '_lock')
 def test_joblist_from_todo_cycle(job_factory):
     """ joblist_from_todo detects cycles """
     gen = _it.count(20).next
@@ -278,7 +277,7 @@ def test_joblist_from_todo_cycle(job_factory):
         def successors(self):
             return self._succ
 
-    job_factory.side_effect = lambda x: Bunch(
+    job_factory.side_effect = lambda x: _test.Bunch(
         t=x, id=gen(), depend_on=Depender()
     )
 
@@ -302,11 +301,6 @@ def test_joblist_from_todo_cycle(job_factory):
     todo2.successors().append(todo5)
     todo3.successors().append(todo)
 
-    try:
+    with assert_raises(_job.DependencyCycle) as e:
         _job.joblist_from_todo(todo)
-    except _job.DependencyCycle, e:
-        assert_equals(e.args[0], [
-            todo, todo2, todo3
-        ])
-    else:
-        assert_false("DependencyCycle not raised")
+    assert_equals(e.exception.args[0], [todo, todo2, todo3])

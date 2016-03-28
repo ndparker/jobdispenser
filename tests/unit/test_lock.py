@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,16 +25,14 @@ u"""
 
 Tests for wolfe._lock.
 """
-from __future__ import absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
-
-from nose.tools import (
-    assert_equals, assert_raises
-)
-from .._util import Bunch
+from nose.tools import assert_equals, assert_raises
+from .. import _util as _test
 
 from wolfe import _lock
 
@@ -70,10 +68,10 @@ def test_lock_validate_empty():
 
 def test_lock_validate_happy():
     """ _lock.validate returns ordered, squashed list of locks """
-    lock1 = Bunch(name='foo', exclusive=True)
-    lock2 = Bunch(name='baz', exclusive=False)
-    lock3 = Bunch(name='foo', exclusive=True)
-    lock4 = Bunch(name='bar', exclusive=True)
+    lock1 = _test.Bunch(name='foo', exclusive=True)
+    lock2 = _test.Bunch(name='baz', exclusive=False)
+    lock3 = _test.Bunch(name='foo', exclusive=True)
+    lock4 = _test.Bunch(name='bar', exclusive=True)
 
     result = _lock.validate([lock1, lock2, lock3, lock4])
     assert_equals(result, [lock4, lock2, lock1])
@@ -81,10 +79,10 @@ def test_lock_validate_happy():
 
 def test_lock_validate_conflict():
     """ _lock.validate raise exception on conflicting locks """
-    lock1 = Bunch(name='foo', exclusive=True)
-    lock2 = Bunch(name='baz', exclusive=False)
-    lock3 = Bunch(name='foo', exclusive=False)
-    lock4 = Bunch(name='bar', exclusive=True)
+    lock1 = _test.Bunch(name='foo', exclusive=True)
+    lock2 = _test.Bunch(name='baz', exclusive=False)
+    lock3 = _test.Bunch(name='foo', exclusive=False)
+    lock4 = _test.Bunch(name='bar', exclusive=True)
 
     with assert_raises(_lock.LockConflict):
         _lock.validate([lock1, lock2, lock3, lock4])

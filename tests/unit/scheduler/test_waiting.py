@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,22 +25,18 @@ u"""
 
 Tests for wolfe.scheduler._waiting.
 """
-from __future__ import with_statement, absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import collections as _collections
 
-from nose.tools import (
-    assert_equals, assert_raises, assert_false, assert_true,
-)
-import mock as _mock
-
-from ..._util import Bunch
+from nose.tools import assert_equals, assert_raises, assert_false, assert_true
+from ... import _util as _test
 
 from wolfe.scheduler import _waiting
-
 
 # pylint: disable = protected-access
 # pylint: disable = pointless-statement
@@ -70,9 +66,9 @@ def test_waiting_init():
 
 def test_waiting_put_false():
     """ Waiting.put return false if there's nothing to wait for """
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
     scheduler.is_done.side_effect = lambda x: True
-    job = Bunch(predecessors=[18, 20, 21])
+    job = _test.Bunch(predecessors=[18, 20, 21])
 
     waiting = _waiting.Waiting(scheduler)
 
@@ -89,9 +85,9 @@ def test_waiting_put_false():
 
 def test_waiting_put_true():
     """ Waiting.put return true if there's something to wait for """
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
     scheduler.is_done.side_effect = lambda x: x != 20
-    job = Bunch(predecessors=[18, 20, 21], id=24)
+    job = _test.Bunch(predecessors=[18, 20, 21], id=24)
 
     waiting = _waiting.Waiting(scheduler)
 
@@ -108,10 +104,10 @@ def test_waiting_put_true():
 
 def test_waiting_free():
     """ Waiting.free frees jobs and returns a list of them """
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
     scheduler.is_done.side_effect = lambda x: x not in (20, 22)
-    job = Bunch(predecessors=[18, 20, 21], id=24)
-    job2 = Bunch(predecessors=[18, 20, 22], id=25)
+    job = _test.Bunch(predecessors=[18, 20, 21], id=24)
+    job2 = _test.Bunch(predecessors=[18, 20, 22], id=25)
     scheduler.jobs = {24: job, 25: job2}
 
     waiting = _waiting.Waiting(scheduler)

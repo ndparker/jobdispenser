@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,26 +25,24 @@ u"""
 
 Tests for wolfe._todo.
 """
-from __future__ import absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 
-from nose.tools import (
-    assert_equals,
-)
-from .._util import mock, Bunch
+from nose.tools import assert_equals
+from .. import _util as _test
 
 from wolfe import _todo
-
 
 # pylint: disable = invalid-name
 # pylint: disable = protected-access
 
 
-@mock(_todo, '_constants', name='constants')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_constants', name='constants')
+@_test.patch(_todo, '_lock', name='lock')
 def test_todo_init_minimal(constants, lock):
     """ Todo properly initializes minimalistically"""
     constants.Group.DEFAULT = 'some group'
@@ -64,8 +62,8 @@ def test_todo_init_minimal(constants, lock):
     })
 
 
-@mock(_todo, '_constants', name='constants')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_constants', name='constants')
+@_test.patch(_todo, '_lock', name='lock')
 def test_todo_init_maximal(constants, lock):
     """ Todo properly initializes will full arguments """
     constants.Group.DEFAULT = 'some group xx'
@@ -77,7 +75,7 @@ def test_todo_init_maximal(constants, lock):
 
     todo = _todo.Todo(
         "DESCX",
-        depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
+        depends_on=iter([1, 2, _test.Bunch(on_success=other.append), 3]),
         locks=('krass', 'krasser'),
         importance=2,
         group='another group',
@@ -96,9 +94,9 @@ def test_todo_init_maximal(constants, lock):
     assert_equals(other, [todo])
 
 
-@mock(_todo, '_dt', name='dt')
-@mock(_todo, '_constants', name='constants')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_dt', name='dt')
+@_test.patch(_todo, '_constants', name='constants')
+@_test.patch(_todo, '_lock', name='lock')
 def test_todo_init_int_delay(dt, constants, lock):
     """ Todo properly initializes will integer delay """
     dt.datetime.utcnow.side_effect = [12]
@@ -111,7 +109,7 @@ def test_todo_init_int_delay(dt, constants, lock):
 
     todo = _todo.Todo(
         "DESCX",
-        depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
+        depends_on=iter([1, 2, _test.Bunch(on_success=other.append), 3]),
         locks=('krass', 'krasser'),
         importance=2,
         group='another group',
@@ -130,9 +128,9 @@ def test_todo_init_int_delay(dt, constants, lock):
     assert_equals(other, [todo])
 
 
-@mock(_todo, '_dt', name='dt')
-@mock(_todo, '_constants', name='constants')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_dt', name='dt')
+@_test.patch(_todo, '_constants', name='constants')
+@_test.patch(_todo, '_lock', name='lock')
 def test_todo_init_int_minus_delay(dt, constants, lock):
     """ Todo properly initializes will negative integer delay """
     dt.datetime.utcnow.side_effect = [12]
@@ -145,7 +143,7 @@ def test_todo_init_int_minus_delay(dt, constants, lock):
 
     todo = _todo.Todo(
         "DESCX",
-        depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
+        depends_on=iter([1, 2, _test.Bunch(on_success=other.append), 3]),
         locks=('krass', 'krasser'),
         importance=2,
         group='another group',
@@ -164,8 +162,8 @@ def test_todo_init_int_minus_delay(dt, constants, lock):
     assert_equals(other, [todo])
 
 
-@mock(_todo, '_constants', name='constants')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_constants', name='constants')
+@_test.patch(_todo, '_lock', name='lock')
 def test_todo_on_success(constants, lock):
     """ Todo stores and returns successors properly """
     constants.Group.DEFAULT = 'some group xx'
@@ -188,8 +186,8 @@ def test_todo_on_success(constants, lock):
     assert_equals(todo.successors(), (successor2, successor1))
 
 
-@mock(_todo, '_constants', name='constants')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_constants', name='constants')
+@_test.patch(_todo, '_lock', name='lock')
 def test_todo_predecessors(constants, lock):
     """ Todo returns predecessors properly """
     constants.Group.DEFAULT = 'some group xx'
@@ -200,13 +198,13 @@ def test_todo_predecessors(constants, lock):
 
     todo = _todo.Todo(
         "DESCX",
-        depends_on=iter([1, 2, Bunch(on_success=other.append), 3]),
+        depends_on=iter([1, 2, _test.Bunch(on_success=other.append), 3]),
     )
 
     assert_equals(todo.predecessors(), (1, 2, 3))
 
 
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_lock', name='lock')
 def test_desc_init_minimal(lock):
     """ TodoDescription properly initializes minimalistically """
     lock.validate.side_effect = lambda x: list(x or ())
@@ -218,7 +216,7 @@ def test_desc_init_minimal(lock):
     })
 
 
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, '_lock', name='lock')
 def test_desc_init_maximal(lock):
     """ TodoDescription properly initializes with full arguments """
     lock.validate.side_effect = list
@@ -230,8 +228,8 @@ def test_desc_init_maximal(lock):
     })
 
 
-@mock(_todo, 'Todo', name='todo_mock')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, 'Todo', name='todo_mock')
+@_test.patch(_todo, '_lock', name='lock')
 def test_desc_todo(todo_mock, lock):
     """ TodoDescription.todo picks default values """
     todo_mock.side_effect = ['lala']
@@ -255,8 +253,8 @@ def test_desc_todo(todo_mock, lock):
     )])
 
 
-@mock(_todo, 'Todo', name='todo_mock')
-@mock(_todo, '_lock', name='lock')
+@_test.patch(_todo, 'Todo', name='todo_mock')
+@_test.patch(_todo, '_lock', name='lock')
 def test_desc_todo_override_defaults(todo_mock, lock):
     """ TodoDescription.todo overrides default values """
     todo_mock.side_effect = ['lala']

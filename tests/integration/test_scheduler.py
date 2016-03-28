@@ -1,8 +1,8 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
- Copyright 2014
+ Copyright 2014 - 2016
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -25,21 +25,18 @@ u"""
 
 Tests for wolfe.scheduler
 """
-from __future__ import absolute_import, with_statement
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import itertools as _it
 
-from nose.tools import (
-    assert_equals, assert_true, assert_raises
-)
-
-from .._util import Bunch, mock
+from nose.tools import assert_equals, assert_true, assert_raises
+from .. import _util as _test
 
 import wolfe as _wolfe
-
 
 # pylint: disable = protected-access
 # pylint: disable = no-member
@@ -58,17 +55,17 @@ def test_simple():
     assert_equals(wolfe.request_job(exe).id, job_id)
     assert_equals(wolfe.request_job(exe).id, job_id)
 
-    wolfe.finish_job(exe.uid, job_id, Bunch(failed=False))
+    wolfe.finish_job(exe.uid, job_id, _test.Bunch(failed=False))
 
     assert_true(wolfe.request_job(exe) is None)
 
 
-@mock(_wolfe.scheduler._job, '_gen_id')
+@_test.patch(_wolfe.scheduler._job, '_gen_id')
 def test_complex():
     """ scheduler: Multiple jobs are ordered and locked properly """
     _wolfe.scheduler._job._gen_id = _it.count(1).next
 
-    success = Bunch(failed=False)
+    success = _test.Bunch(failed=False)
 
     exe = _wolfe.Executor('complex')
     exe2 = _wolfe.Executor('complex2')

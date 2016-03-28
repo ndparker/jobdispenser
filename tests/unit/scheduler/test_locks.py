@@ -1,5 +1,5 @@
 # -*- coding: ascii -*-
-u"""
+r"""
 :Copyright:
 
  Copyright 2014 - 2016
@@ -25,19 +25,16 @@ u"""
 
 Tests for wolfe.scheduler._locks.
 """
-from __future__ import with_statement, absolute_import
-
-__author__ = u"Andr\xe9 Malo"
+if __doc__:  # pragma: no cover
+    # pylint: disable = redefined-builtin
+    __doc__ = __doc__.encode('ascii').decode('unicode_escape')
+__author__ = r"Andr\xe9 Malo".encode('ascii').decode('unicode_escape')
 __docformat__ = "restructuredtext en"
 
 import collections as _collections
 
-from nose.tools import (
-    assert_equals, assert_raises, assert_false, assert_true,
-)
-import mock as _mock
-
-from ..._util import Bunch
+from nose.tools import assert_equals, assert_raises, assert_false, assert_true
+from ... import _util as _test
 
 from wolfe.scheduler import _locks
 
@@ -55,7 +52,7 @@ class _Scheduler(object):
 
 def _lock(name, exclusive=True):
     """ Create lock dummy """
-    return Bunch(**locals())
+    return _test.Bunch(**locals())
 
 
 def test_locks_init():
@@ -78,8 +75,8 @@ def test_locks_init():
 
 def test_locks_enter():
     """ Locks.enter enters locks properly """
-    scheduler = _mock.MagicMock()
-    job = Bunch(locks=(_lock('foo'), _lock('bar')), id=42)
+    scheduler = _test.mock.MagicMock()
+    job = _test.Bunch(locks=(_lock('foo'), _lock('bar')), id=42)
 
     locks = _locks.Locks(scheduler)
     locks._acquired['foo'] = 1
@@ -94,8 +91,8 @@ def test_locks_enter():
 
 def test_locks_acquire_false():
     """ Locks.acquire rejects waiting job """
-    scheduler = _mock.MagicMock()
-    job = Bunch(locks_waiting=1)
+    scheduler = _test.mock.MagicMock()
+    job = _test.Bunch(locks_waiting=1)
 
     locks = _locks.Locks(scheduler)
 
@@ -104,9 +101,9 @@ def test_locks_acquire_false():
 
 def test_locks_acquire_true():
     """ Locks.acquire acquires locks properly """
-    scheduler = _mock.MagicMock()
-    job = Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
-    job2 = Bunch(id=25, locks=(_lock('foo'),))
+    scheduler = _test.mock.MagicMock()
+    job = _test.Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
+    job2 = _test.Bunch(id=25, locks=(_lock('foo'),))
     scheduler.jobs = {24: job, 25: job2}
 
     locks = _locks.Locks(scheduler)
@@ -131,11 +128,11 @@ def test_locks_acquire_true():
 
 def test_locks_release():
     """ Locks.release releases locks properly """
-    scheduler = _mock.MagicMock()
+    scheduler = _test.mock.MagicMock()
 
-    job = Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
-    job2 = Bunch(id=25, locks=(_lock('foo'),))
-    job3 = Bunch(id=26, locks=(_lock('bar'), _lock('zonk')))
+    job = _test.Bunch(id=24, locks=(_lock('foo'), _lock('bar')))
+    job2 = _test.Bunch(id=25, locks=(_lock('foo'),))
+    job3 = _test.Bunch(id=26, locks=(_lock('bar'), _lock('zonk')))
     scheduler.jobs = {24: job, 25: job2, 26: job3}
 
     locks = _locks.Locks(scheduler)
