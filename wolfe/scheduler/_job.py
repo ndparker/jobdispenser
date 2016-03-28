@@ -208,7 +208,7 @@ def joblist_from_todo(todo):
                 pre.append(parent)
             else:
                 graph.add((False, None), (True, virtual_id))
-    except DependencyCycle, e:
+    except DependencyCycle as e:
         # remap to our input (todos and not some weird virtual IDs)
         raise DependencyCycle([
             todos[virtuals[tup[1]]][2] for tup in e.args[0]
